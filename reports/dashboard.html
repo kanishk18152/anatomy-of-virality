@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Anatomy of Virality | Executive Dashboard & Model Suite</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-main: #0d1117;
+    --bg-card: #161b22;
+    --bg-card-sub: #1c2128;
+    --border: #30363d;
+    --text-primary: #f0f6fc;
+    --text-secondary: #8b949e;
+    --accent-blue: #58a6ff;
+    --accent-green: #3fb950;
+    --accent-orange: #d29922;
+    --accent-red: #f85149;
+    --state-0: #1b9e77;
+    --state-1: #386cb0;
+    --state-2: #d95f02;
+    --state-3: #7570b3;
+    --state-4: #6e7681;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg-main);
+    color: var(--text-primary);
+    line-height: 1.55;
+    padding: 24px 36px;
+  }
+  .container { max-width: 1340px; margin: 0 auto; }
+  header {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 22px;
+    margin-bottom: 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .title-area h1 { font-size: 28px; font-weight: 800; letter-spacing: -0.5px; color: #fff; }
+  .title-area p { color: var(--text-secondary); font-size: 14px; margin-top: 4px; }
+  .badge-container { display: flex; gap: 8px; align-items: center; }
+  .badge {
+    background: rgba(88, 166, 255, 0.15);
+    color: var(--accent-blue);
+    border: 1px solid rgba(88, 166, 255, 0.3);
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .badge-green {
+    background: rgba(63, 185, 80, 0.15);
+    color: var(--accent-green);
+    border-color: rgba(63, 185, 80, 0.3);
+  }
+
+  /* Top Stat Grid */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .stat-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 22px;
+  }
+  .stat-label { font-size: 11px; text-transform: uppercase; color: var(--text-secondary); font-weight: 700; letter-spacing: 0.6px; }
+  .stat-value { font-size: 28px; font-weight: 800; color: #fff; margin-top: 4px; }
+  .stat-sub { font-size: 12px; color: var(--accent-blue); margin-top: 2px; }
+
+  .section-title {
+    font-size: 20px;
+    font-weight: 700;
+    margin: 36px 0 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #fff;
+  }
+  .section-title .section-num {
+    background: var(--accent-blue);
+    color: #000;
+    font-size: 12px;
+    font-weight: 800;
+    padding: 2px 8px;
+    border-radius: 12px;
+  }
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px;
+    margin-bottom: 24px;
+  }
+
+  /* Archetypes */
+  .archetype-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+  .arch-card {
+    border-radius: 8px;
+    padding: 18px;
+    border-left: 5px solid #fff;
+    background: var(--bg-card-sub);
+    border: 1px solid var(--border);
+  }
+  .arch-0 { border-left: 5px solid var(--state-0); }
+  .arch-1 { border-left: 5px solid var(--state-1); }
+  .arch-2 { border-left: 5px solid var(--state-2); }
+  .arch-3 { border-left: 5px solid var(--state-3); }
+  .arch-name { font-weight: 700; font-size: 15px; margin-bottom: 6px; }
+  .arch-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.45; }
+  .arch-meta { margin-top: 12px; font-size: 11px; font-family: 'JetBrains Mono', monospace; color: #fff; background: rgba(0,0,0,0.25); padding: 8px; border-radius: 6px; }
+
+  /* Figure Gallery Grid */
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+  .gallery-card {
+    background: var(--bg-card-sub);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+  }
+  .gallery-card:hover {
+    border-color: var(--accent-blue);
+    transform: translateY(-2px);
+  }
+  .gallery-img-wrap {
+    background: #ffffff;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 280px;
+    border-bottom: 1px solid var(--border);
+  }
+  .gallery-img-wrap img {
+    max-width: 100%;
+    max-height: 380px;
+    height: auto;
+    border-radius: 4px;
+    cursor: zoom-in;
+    transition: opacity 0.2s ease;
+  }
+  .gallery-img-wrap img:hover { opacity: 0.95; }
+  .gallery-info {
+    padding: 16px 18px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  .gallery-tag {
+    font-size: 10px;
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: var(--accent-blue);
+    margin-bottom: 4px;
+  }
+  .gallery-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 6px;
+  }
+  .gallery-desc {
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.45;
+  }
+
+  /* Matrix Table */
+  table.matrix {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  table.matrix th, table.matrix td {
+    padding: 10px 12px;
+    text-align: right;
+    border-bottom: 1px solid var(--border);
+  }
+  table.matrix th { color: var(--text-secondary); font-weight: 600; text-align: right; }
+  table.matrix th:first-child, table.matrix td:first-child { text-align: left; font-weight: 600; color: #fff; }
+  .highlight-cell { font-weight: 700; border-radius: 4px; padding: 3px 6px; }
+
+  /* Inference Tables */
+  .inference-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  .table-clean {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .table-clean th, .table-clean td {
+    padding: 10px 14px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  .table-clean th {
+    font-weight: 700;
+    color: var(--text-secondary);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .table-clean td { font-family: 'JetBrains Mono', monospace; }
+
+  /* Simulator */
+  .sim-controls {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    background: var(--bg-card-sub);
+    padding: 18px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  select, button {
+    background: var(--bg-main);
+    color: #fff;
+    border: 1px solid var(--border);
+    padding: 9px 16px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-family: inherit;
+  }
+  button.btn-primary {
+    background: #238636;
+    border-color: rgba(240, 246, 252, 0.1);
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.15s ease;
+  }
+  button.btn-primary:hover { background: #2ea043; }
+  .sim-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .timeline-node {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 14px 18px;
+    background: var(--bg-card-sub);
+    border-radius: 8px;
+    border-left: 5px solid #fff;
+    animation: fadeIn 0.3s ease-in-out;
+  }
+  .step-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 4px;
+    color: #fff;
+    white-space: nowrap;
+  }
+  .comment-content { flex: 1; }
+  .comment-author { font-size: 12px; color: var(--accent-blue); font-weight: 600; }
+  .comment-body { font-size: 13px; color: var(--text-primary); margin-top: 4px; }
+  .comment-stats { font-size: 11px; color: var(--text-secondary); margin-top: 4px; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* Modal Lightbox */
+  #img-modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.88);
+    justify-content: center;
+    align-items: center;
+    padding: 24px;
+  }
+  #img-modal.active { display: flex; }
+  #modal-content {
+    max-width: 90%;
+    max-height: 90%;
+    background: #fff;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+  }
+  #modal-img { max-width: 100%; max-height: 80vh; display: block; border-radius: 4px; }
+  #modal-caption { color: #161b22; font-size: 13px; font-weight: 600; text-align: center; margin-top: 8px; }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <div class="title-area">
+      <h1>The Anatomy of Virality: Executive Decision Dashboard</h1>
+      <p>Absorbing Markov Chains, Latent Feature Geometry & Non-Parametric Statistical Inference</p>
+    </div>
+    <div class="badge-container">
+      <div class="badge">Cornell ConvoKit Corpus</div>
+      <div class="badge badge-green">Hierarchical Ward Linkage (4D Winsorized, K=4)</div>
+      <div class="badge">500x Block Bootstrap CIs</div>
+    </div>
+  </header>
+
+  <!-- Key Metrics Overview -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-label">Sequenced Comments</div>
+      <div class="stat-value">6,709</div>
+      <div class="stat-sub">Across 127 complete discussion trees</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Conversational Chains</div>
+      <div class="stat-value">1,338</div>
+      <div class="stat-sub">Direct Graph reply edges (weight = 1.0)</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Deep Dive Lifespan (τ₀)</div>
+      <div class="stat-value">3.59 <span style="font-size: 16px; color: var(--text-secondary);">cmts</span></div>
+      <div class="stat-sub">95% CI: [3.37, 3.80] (Highest survival)</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Friction Deficit</div>
+      <div class="stat-value">-10.3%</div>
+      <div class="stat-sub">Lifespan drops to 3.22 [3.03, 3.39]</div>
+    </div>
+  </div>
+
+  <!-- Section 1: Visual Artifacts Gallery -->
+  <div class="section-title">
+    <span class="section-num">1</span> Visual Analytics Gallery (Publication Figures)
+  </div>
+  <div class="gallery-grid">
+
+    <div class="gallery-card">
+      <div class="gallery-img-wrap">
+        <img src="figures/pca_correlation_heatmap.png" alt="Figure 1: Feature Correlation Matrix (Multicollinearity Diagnostic)" onclick="openModal('figures/pca_correlation_heatmap.png', 'Figure 1: Feature Correlation Matrix (Multicollinearity Diagnostic)')" title="Click to enlarge">
+      </div>
+      <div class="gallery-info">
+        <div class="gallery-tag">Pre-PCA Diagnostic</div>
+        <div class="gallery-title">Figure 1: Feature Correlation Matrix (Multicollinearity Diagnostic)</div>
+        <div class="gallery-desc">Pearson correlations across all 6 raw NLP features. Word Count and Root-TTR exhibit strong positive correlation (r ≈ 0.73), motivating PCA to eliminate redundant double-counting before clustering.</div>
+      </div>
+    </div>
+
+    <div class="gallery-card">
+      <div class="gallery-img-wrap">
+        <img src="figures/pca_scree_plot.png" alt="Figure 2: PCA Scree Plot & Cumulative Variance Explained" onclick="openModal('figures/pca_scree_plot.png', 'Figure 2: PCA Scree Plot & Cumulative Variance Explained')" title="Click to enlarge">
+      </div>
+      <div class="gallery-info">
+        <div class="gallery-tag">Component Selection</div>
+        <div class="gallery-title">Figure 2: PCA Scree Plot & Cumulative Variance Explained</div>
+        <div class="gallery-desc">Individual and cumulative variance across all 6 principal components. PC1–PC4 capture 83.9% of total variance. Sharp drop after PC4 (PC5=13.6%, PC6=2.5%) justifies retaining exactly 4 components.</div>
+      </div>
+    </div>
+
+    <div class="gallery-card">
+      <div class="gallery-img-wrap">
+        <img src="figures/pca_loadings_bar.png" alt="Figure 3: PCA Feature Loadings — All 4 Components" onclick="openModal('figures/pca_loadings_bar.png', 'Figure 3: PCA Feature Loadings — All 4 Components')" title="Click to enlarge">
+      </div>
+      <div class="gallery-info">
+        <div class="gallery-tag">Component Interpretation</div>
+        <div class="gallery-title">Figure 3: PCA Feature Loadings — All 4 Components</div>
+        <div class="gallery-desc">Loading coefficients across 4 PCs. PC1: Word Count (+0.61) & Root-TTR (+0.65) → Depth. PC2: Polarity (+0.72) → Emotional Valence. PC3: Exclamation Density (+0.91) → Agitation. PC4: Question Density (+0.79) → Inquisitiveness.</div>
+      </div>
+    </div>
+
+    <div class="gallery-card">
+      <div class="gallery-img-wrap">
+        <img src="figures/pca_biplot.png" alt="Figure 4: PCA Biplot — PC1 vs PC2 (Primary Plane)" onclick="openModal('figures/pca_biplot.png', 'Figure 4: PCA Biplot — PC1 vs PC2 (Primary Plane)')" title="Click to enlarge">
+      </div>
+      <div class="gallery-info">
+        <div class="gallery-tag">Dimensionality Reduction</div>
+        <div class="gallery-title">Figure 4: PCA Biplot — PC1 vs PC2 (Primary Plane)</div>
+        <div class="gallery-desc">2D projection of all comments colored by subreddit, with loading vectors overlaid. Shows how r/science and r/politics overlap in the analytical quadrant while r/cringe clusters in the low-depth, reactive zone.</div>
+      </div>
+    </div>
+
+    <div class="gallery-card">
+      <div class="gallery-img-wrap">
+        <img src="figures/pca_biplot_pc3_pc4.png" alt="Figure 5: PCA Biplot — PC3 vs PC4 (Secondary Dimensions)" onclick="openModal('figures/pca_biplot_pc3_pc4.png', 'Figure 5: PCA Biplot — PC3 vs PC4 (Secondary Dimensions)')" title="Click to enlarge">
+      </div>
+      <div class="gallery-info">
+        <div class="gallery-tag">Extended PCA Analysis</div>
+        <div class="gallery-title">Figure 5: PCA Biplot — PC3 vs PC4 (Secondary Dimensions)</div>
+        <div class="gallery-desc">Secondary latent plane: PC3 (Agitation Intensity, 16.2%) vs PC4 (Inquisitive Engagement, 15.3%). Reveals that r/politics has the widest spread on both agitation and questioning axes; r/cringe is agitation-heavy but question-sparse.</div>
+      </div>
+    </div>
+
+    <div class="gallery-card">
+      <div class="gallery-img-wrap">
+        <img src="figures/clustering_elbow_silhouette.png" alt="Figure 6: Elbow Curve & Silhouette Optimization (K=4)" onclick="openModal('figures/clustering_elbow_silhouette.png', 'Figure 6: Elbow Curve & Silhouette Optimization (K=4)')" title="Click to enlarge">
+      </div>
+      <div class="gallery-info">
+        <div class="gallery-tag">Cluster Validation</div>
+        <div class="gallery-title">Figure 6: Elbow Curve & Silhouette Optimization (K=4)</div>
+        <div class="gallery-desc">Dual-axis evaluation across K=2 to 8. WCSS inertia exhibits clear elbow at K=4, coinciding with peak Silhouette Score (s = 0.389). Proves 4 states provide optimal statistical parsimony.</div>
+      </div>
+    </div>
+
+    <div class="gallery-card">
+      <div class="gallery-img-wrap">
+        <img src="figures/hierarchical_dendrogram.png" alt="Figure 7: Hierarchical Agglomerative Dendrogram (Ward Linkage)" onclick="openModal('figures/hierarchical_dendrogram.png', 'Figure 7: Hierarchical Agglomerative Dendrogram (Ward Linkage)')" title="Click to enlarge">
+      </div>
+      <div class="gallery-info">
+        <div class="gallery-tag">Unsupervised Taxonomy</div>
+        <div class="gallery-title">Figure 7: Hierarchical Agglomerative Dendrogram (Ward Linkage)</div>
+        <div class="gallery-desc">Deterministic tree cut at K=4. Top-level branch bifurcates Substantive Dialogue from Reactive Chatter; lower tiers isolate Inquiry, Deep Dives, Friction, and Banter.</div>
+      </div>
+    </div>
+
+    <div class="gallery-card">
+      <div class="gallery-img-wrap">
+        <img src="figures/cluster_map.png" alt="Figure 8: Convex Hull State Map in PC1–PC2 Space" onclick="openModal('figures/cluster_map.png', 'Figure 8: Convex Hull State Map in PC1–PC2 Space')" title="Click to enlarge">
+      </div>
+      <div class="gallery-info">
+        <div class="gallery-tag">Behavioral Archetypes</div>
+        <div class="gallery-title">Figure 8: Convex Hull State Map in PC1–PC2 Space</div>
+        <div class="gallery-desc">Convex-hull boundaries and centroids across all 5,095 sequenced comments: State 0 (Deep Dive), State 1 (Inquiry), State 2 (Friction), and State 3 (Casual Banter).</div>
+      </div>
+    </div>
+
+    <div class="gallery-card">
+      <div class="gallery-img-wrap">
+        <img src="figures/markov_transition_heatmaps.png" alt="Figure 9: Empirical Markov Transition Heatmaps Across Communities" onclick="openModal('figures/markov_transition_heatmaps.png', 'Figure 9: Empirical Markov Transition Heatmaps Across Communities')" title="Click to enlarge">
+      </div>
+      <div class="gallery-info">
+        <div class="gallery-tag">Stochastic Dynamics</div>
+        <div class="gallery-title">Figure 9: Empirical Markov Transition Heatmaps Across Communities</div>
+        <div class="gallery-desc">Community-specific Q and R matrices. Highlights the constructive Inquiry Loop in r/science vs. the self-reinforcing Friction Trap and rapid abandonment in r/cringe.</div>
+      </div>
+    </div>
+
+    <div class="gallery-card">
+      <div class="gallery-img-wrap">
+        <img src="figures/expected_thread_lifetime.png" alt="Figure 10: Expected Thread Lifespan τ with 95% Bootstrap Error Bars" onclick="openModal('figures/expected_thread_lifetime.png', 'Figure 10: Expected Thread Lifespan τ with 95% Bootstrap Error Bars')" title="Click to enlarge">
+      </div>
+      <div class="gallery-info">
+        <div class="gallery-tag">Inference & Findings</div>
+        <div class="gallery-title">Figure 10: Expected Thread Lifespan τ with 95% Bootstrap Error Bars</div>
+        <div class="gallery-desc">Closed-form lifetime expectations τ = (I - Q)⁻¹ 1. Deep Dive (3.70 comments [3.48, 3.95]) lives 20.5% longer than Friction (3.07 comments [2.88, 3.25]), with non-overlapping 95% CIs.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Section 2: Conversational Archetypes -->
+  <div class="section-title">
+    <span class="section-num">2</span> The 4 Conversational Archetypes (Ward Hierarchical Clustering on 4D Latent Space, s = 0.310)
+  </div>
+  <div class="archetype-grid">
+    <div class="arch-card arch-0">
+      <div class="arch-name" style="color: var(--state-0)">State 0: Deep Dive</div>
+      <div class="arch-desc">Long-form, high vocabulary richness, neutral-to-positive sentiment. Comprehensive analytical breakdowns and peer references.</div>
+      <div class="arch-meta">Sample: n=838 (12.5%)<br>Expected Life: 3.59 cmts [3.37, 3.80]</div>
+    </div>
+    <div class="arch-card arch-1">
+      <div class="arch-name" style="color: var(--state-1)">State 1: Inquiry</div>
+      <div class="arch-desc">High question mark density (?), moderate length. Inquisitive probing, requests for clarification, and counter-hypotheses.</div>
+      <div class="arch-meta">Sample: n=1,622 (24.2%)<br>Expected Life: 3.16 cmts [3.00, 3.33]</div>
+    </div>
+    <div class="arch-card arch-2">
+      <div class="arch-name" style="color: var(--state-2)">State 2: Friction</div>
+      <div class="arch-desc">Hostile tone, high subjectivity, elevated exclamation density (!). Disagreements, personal attacks, and flame wars.</div>
+      <div class="arch-meta">Sample: n=909 (13.5%)<br>Expected Life: 3.22 cmts [3.03, 3.39]</div>
+    </div>
+    <div class="arch-card arch-3">
+      <div class="arch-name" style="color: var(--state-3)">State 3: Casual Banter</div>
+      <div class="arch-desc">Short one-liners, humorous reactions, memes, and casual agreements. Lightweight community chatter.</div>
+      <div class="arch-meta">Sample: n=3,340 (49.8%)<br>Expected Life: 3.40 cmts [3.24, 3.57]</div>
+    </div>
+  </div>
+
+  <!-- Section 3: Markov Transitions & Fundamental Matrix -->
+  <div class="section-title">
+    <span class="section-num">3</span> Absorbing Markov Matrices (P, Q, and Fundamental Matrix N)
+  </div>
+  <div class="card">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
+      <span style="font-weight: 600; font-size: 14px;">Select Community Transition Physics:</span>
+      <select id="community-select" onchange="updateMatrices()">
+        <option value="overall_corpus">Overall Reddit Corpus (All Communities)</option>
+        <option value="science">r/science (Strict Moderation & Citations)</option>
+        <option value="politics">r/politics (Ideological Debate)</option>
+        <option value="cringe">r/cringe (Banter, Humor & Sarcasm)</option>
+      </select>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 24px;">
+      <div>
+        <h4 style="font-size: 12px; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 10px;">
+          Transition Probability Matrix P [Q | R]
+        </h4>
+        <table class="matrix" id="p-matrix-table">
+          <!-- Populated by JS -->
+        </table>
+      </div>
+      <div>
+        <h4 style="font-size: 12px; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 10px;">
+          Fundamental Matrix N = (I₄ - Q)⁻¹ & Life Expectancy (τ)
+        </h4>
+        <table class="matrix" id="n-matrix-table">
+          <!-- Populated by JS -->
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 4: Statistical Rigor & Inference Tables -->
+  <div class="section-title">
+    <span class="section-num">4</span> Statistical Inference & Hypothesis Testing (Non-Parametric)
+  </div>
+  <div class="inference-grid">
+    <div class="card" style="margin-bottom: 0;">
+      <h4 style="font-size: 13px; text-transform: uppercase; color: var(--accent-blue); margin-bottom: 12px;">
+        Thread-Level Block Bootstrapping (B = 500)
+      </h4>
+      <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 14px;">
+        Solves pseudoreplication by resampling entire conversation trees with replacement.
+      </p>
+      <table class="table-clean">
+        <thead>
+          <tr>
+            <th>State</th>
+            <th>Mean τ</th>
+            <th>Std Err</th>
+            <th>95% CI Lower</th>
+            <th>95% CI Upper</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <tr>
+            <td style="color: #fff; font-weight: 600;">Deep Dive</td>
+            <td>3.59</td>
+            <td style="color: var(--text-secondary);">±0.12</td>
+            <td style="color: var(--accent-green);">3.37</td>
+            <td style="color: var(--accent-green);">3.80</td>
+          </tr>
+
+          <tr>
+            <td style="color: #fff; font-weight: 600;">Inquiry</td>
+            <td>3.16</td>
+            <td style="color: var(--text-secondary);">±0.08</td>
+            <td style="color: var(--accent-green);">3.00</td>
+            <td style="color: var(--accent-green);">3.33</td>
+          </tr>
+
+          <tr>
+            <td style="color: #fff; font-weight: 600;">Friction</td>
+            <td>3.22</td>
+            <td style="color: var(--text-secondary);">±0.09</td>
+            <td style="color: var(--accent-green);">3.03</td>
+            <td style="color: var(--accent-green);">3.39</td>
+          </tr>
+
+          <tr>
+            <td style="color: #fff; font-weight: 600;">Banter</td>
+            <td>3.40</td>
+            <td style="color: var(--text-secondary);">±0.08</td>
+            <td style="color: var(--accent-green);">3.24</td>
+            <td style="color: var(--accent-green);">3.57</td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card" style="margin-bottom: 0;">
+      <h4 style="font-size: 13px; text-transform: uppercase; color: var(--accent-orange); margin-bottom: 12px;">
+        Permutation Homogeneity Tests (1,000 Iterations)
+      </h4>
+      <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 14px;">
+        Non-parametric permutation test comparing Frobenius distance ||P_A - P_B||_F.
+      </p>
+      <table class="table-clean">
+        <thead>
+          <tr>
+            <th>Community Comparison</th>
+            <th>Frobenius (DF)</th>
+            <th>Empirical p-value</th>
+            <th>Significance</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <tr>
+            <td style="color: #fff; font-weight: 600;">r/science vs r/politics</td>
+            <td>0.1801</td>
+            <td><strong>0.122</strong></td>
+            <td><span style="color: #8b949e;">Not Sig (p = 0.538)</span></td>
+          </tr>
+
+          <tr>
+            <td style="color: #fff; font-weight: 600;">r/science vs r/cringe</td>
+            <td>0.2767</td>
+            <td><strong>0.004</strong></td>
+            <td><span style="color: #3fb950; font-weight: 700;">Significant (p < 0.05)</span></td>
+          </tr>
+
+          <tr>
+            <td style="color: #fff; font-weight: 600;">r/politics vs r/cringe</td>
+            <td>0.2522</td>
+            <td><strong>0.016</strong></td>
+            <td><span style="color: #3fb950; font-weight: 700;">Significant (p < 0.05)</span></td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Section 5: Live Trajectory Simulator -->
+  <div class="section-title">
+    <span class="section-num">5</span> Interactive Monte Carlo Trajectory Simulator
+  </div>
+  <div class="card">
+    <div class="sim-controls">
+      <div>
+        <label style="font-size: 12px; color: var(--text-secondary); display: block; margin-bottom: 4px;">Community Environment</label>
+        <select id="sim-comm">
+          <option value="science">r/science (Strict Moderation)</option>
+          <option value="politics">r/politics (Ideological Debate)</option>
+          <option value="cringe">r/cringe (Banter / Sarcasm)</option>
+          <option value="overall_corpus">Overall Corpus</option>
+        </select>
+      </div>
+      <div>
+        <label style="font-size: 12px; color: var(--text-secondary); display: block; margin-bottom: 4px;">Initial Comment Archetype</label>
+        <select id="sim-state">
+          <option value="0">State 0: Deep Dive</option>
+          <option value="1">State 1: Inquiry</option>
+          <option value="2">State 2: Friction</option>
+          <option value="3">State 3: Casual Banter</option>
+        </select>
+      </div>
+      <div style="margin-top: 18px;">
+        <button class="btn-primary" onclick="runSimulation()">▶ Simulate Stochastic Trajectory</button>
+      </div>
+    </div>
+
+    <div class="sim-timeline" id="sim-timeline">
+      <!-- Simulated comments rendered here -->
+    </div>
+  </div>
+</div>
+
+<!-- Modal Lightbox for Figure Inspection -->
+<div id="img-modal" onclick="closeModal()">
+  <div id="modal-content" onclick="event.stopPropagation()">
+    <img id="modal-img" src="" alt="">
+    <div id="modal-caption"></div>
+  </div>
+</div>
+
+<script>
+  const P_DATA = {"science": {"Deep Dive": {"Deep Dive": 0.1641025699934255, "Inquiry": 0.0403225816207076, "Friction": 0.0723684323060939, "Banter": 0.0849858319262653, "Thread Death (Absorbing)": 0.0}, "Inquiry": {"Deep Dive": 0.0666666793162397, "Inquiry": 0.213709674525234, "Friction": 0.144736838296399, "Banter": 0.1458923436027895, "Thread Death (Absorbing)": 0.0}, "Friction": {"Deep Dive": 0.0923076904930965, "Inquiry": 0.0766129010470863, "Friction": 0.085526306959834, "Banter": 0.0864022766934973, "Thread Death (Absorbing)": 0.0}, "Banter": {"Deep Dive": 0.4256410101512157, "Inquiry": 0.3185483867390739, "Friction": 0.3684210626731299, "Banter": 0.3824362585407153, "Thread Death (Absorbing)": 0.0}, "Thread Death (Absorbing)": {"Deep Dive": 0.2512820500460223, "Inquiry": 0.3508064560678981, "Friction": 0.3289473597645432, "Banter": 0.3002832892367325, "Thread Death (Absorbing)": 1.0}}, "politics": {"Deep Dive": {"Deep Dive": 0.2297734595050322, "Inquiry": 0.0486577288410433, "Friction": 0.0503355751767939, "Banter": 0.0822162591974991, "Thread Death (Absorbing)": 0.0}, "Inquiry": {"Deep Dive": 0.1423948247609473, "Inquiry": 0.2265100667987928, "Friction": 0.1979865824962841, "Banter": 0.1760500317371324, "Thread Death (Absorbing)": 0.0}, "Friction": {"Deep Dive": 0.0582524296352154, "Inquiry": 0.0973154308364487, "Friction": 0.1174496642268366, "Banter": 0.104557638845963, "Thread Death (Absorbing)": 0.0}, "Banter": {"Deep Dive": 0.3300970753762523, "Inquiry": 0.288590594477726, "Friction": 0.3087248136570419, "Banter": 0.3655049262946222, "Thread Death (Absorbing)": 0.0}, "Thread Death (Absorbing)": {"Deep Dive": 0.2394822107225525, "Inquiry": 0.338926179045989, "Friction": 0.3255033644430433, "Banter": 0.2716711439247831, "Thread Death (Absorbing)": 1.0}}, "cringe": {"Deep Dive": {"Deep Dive": 0.1044776063711289, "Inquiry": 0.007968127744004, "Friction": 0.025641017751479, "Banter": 0.071428559736394, "Thread Death (Absorbing)": 0.0}, "Inquiry": {"Deep Dive": 0.1791044936511487, "Inquiry": 0.3346613493119155, "Friction": 0.2222222364672368, "Banter": 0.1785714365433677, "Thread Death (Absorbing)": 0.0}, "Friction": {"Deep Dive": 0.0746268574292708, "Inquiry": 0.1155378443199313, "Friction": 0.1282051058514129, "Banter": 0.1071428559736394, "Thread Death (Absorbing)": 0.0}, "Banter": {"Deep Dive": 0.4626865488973029, "Inquiry": 0.199203185631974, "Friction": 0.2735042805172037, "Banter": 0.3630952304953228, "Thread Death (Absorbing)": 0.0}, "Thread Death (Absorbing)": {"Deep Dive": 0.1791044936511487, "Inquiry": 0.3426294929921751, "Friction": 0.3504273594126673, "Banter": 0.2797619172512761, "Thread Death (Absorbing)": 1.0}}, "overall_corpus": {"Deep Dive": {"Deep Dive": 0.1926444833778573, "Inquiry": 0.0374429286061593, "Friction": 0.0511463886384915, "Banter": 0.0814437702734156, "Thread Death (Absorbing)": 0.0}, "Inquiry": {"Deep Dive": 0.1208406377265439, "Inquiry": 0.2484018241688038, "Friction": 0.188712526139308, "Banter": 0.1665895337015334, "Thread Death (Absorbing)": 0.0}, "Friction": {"Deep Dive": 0.0718038526565677, "Inquiry": 0.0968036485202559, "Friction": 0.1111111036645109, "Banter": 0.0990282297758356, "Thread Death (Absorbing)": 0.0}, "Banter": {"Deep Dive": 0.3782836984857725, "Inquiry": 0.2748858393127749, "Friction": 0.3174603125612384, "Banter": 0.3706617347325576, "Thread Death (Absorbing)": 0.0}, "Thread Death (Absorbing)": {"Deep Dive": 0.2364273277532583, "Inquiry": 0.3424657593920062, "Friction": 0.3315696689964509, "Banter": 0.2822767315166575, "Thread Death (Absorbing)": 1.0}}};
+  const N_DATA = {"science": {"Deep Dive": {"Deep Dive": 1.3801366429300317, "Inquiry": 0.2063462798555467, "Friction": 0.2522535172284953, "Banter": 0.2739663454429238}, "Inquiry": {"Deep Dive": 0.4231132058718105, "Inquiry": 1.5371228058471045, "Friction": 0.4731957264680679, "Banter": 0.4875581971948725}, "Friction": {"Deep Dive": 0.302294300269402, "Inquiry": 0.2521699610456881, "Friction": 1.2696866982032058, "Banter": 0.2788120627086739}, "Banter": {"Deep Dive": 1.3498143031477678, "Inquiry": 1.0855270622910849, "Friction": 1.175400126413316, "Banter": 2.2259118101081823}}, "politics": {"Deep Dive": {"Deep Dive": 1.4877365230360062, "Inquiry": 0.2351453473951444, "Friction": 0.2418001688562071, "Banter": 0.2978676116296961}, "Inquiry": {"Deep Dive": 0.6292883585751167, "Inquiry": 1.6522408339966408, "Friction": 0.6318595472830669, "Banter": 0.6441035483863176}, "Friction": {"Deep Dive": 0.3111281487081576, "Inquiry": 0.3196582739216233, "Friction": 1.3452080166847908, "Banter": 0.3506842290651238}, "Banter": {"Deep Dive": 1.211604610147182, "Inquiry": 1.0293671678223204, "Friction": 1.0677235699662992, "Banter": 2.194614953463718}}, "cringe": {"Deep Dive": {"Deep Dive": 1.2395948323456574, "Inquiry": 0.0903093566606484, "Friction": 0.1172230377394367, "Banter": 0.1840601008904433}, "Inquiry": {"Deep Dive": 0.812244948172597, "Inquiry": 1.859235993814521, "Friction": 0.7283704665665908, "Banter": 0.7349036205970586}, "Friction": {"Deep Dive": 0.3754671768980724, "Inquiry": 0.3522532333198696, "Friction": 1.3640777329369946, "Banter": 0.370342068305518}, "Banter": {"Deep Dive": 1.315797206112115, "Inquiry": 0.7983821897116573, "Friction": 0.8987408579227133, "Banter": 2.0926949835841357}}, "overall_corpus": {"Deep Dive": {"Deep Dive": 1.414121302413669, "Inquiry": 0.1974227669815642, "Friction": 0.2196473490811075, "Banter": 0.2698250443556643}, "Inquiry": {"Deep Dive": 0.5887605217085291, "Inquiry": 1.661225849665091, "Friction": 0.6048068775298975, "Banter": 0.6110969124360015}, "Friction": {"Deep Dive": 0.3196598973426531, "Inquiry": 0.3082413847569157, "Friction": 1.3273411441548288, "Banter": 0.3318220917720773}, "Banter": {"Deep Dive": 1.2684121426068082, "Inquiry": 0.9997543729749367, "Friction": 1.06575434744731, "Banter": 2.185458479604076}}};
+  const TAU_DATA = {"science": {"Deep Dive": 3.455358452219012, "Inquiry": 3.081166109039424, "Friction": 3.170536068313085, "Banter": 3.2662484154546525}, "politics": {"Deep Dive": 3.6397576404664624, "Inquiry": 3.236411623135729, "Friction": 3.2865913027903644, "Banter": 3.4872703425448552}, "cringe": {"Deep Dive": 3.7431041635284417, "Inquiry": 3.1001807735066964, "Friction": 3.1084120951657352, "Banter": 3.382000773377156}, "overall_corpus": {"Deep Dive": 3.5909538640716594, "Inquiry": 3.1666443743785075, "Friction": 3.217549718213144, "Banter": 3.398202528167819}};
+  const SAMPLES = {"science": {"0": [{"author": "quincy_p_jackson", "body": "That's not entirely accurate, is it? I've only spent about 5 minutes skimming this article (being lazy), so I very well could be wrong. But it seems like they are \"facilitating\" transmission ... meaning that there is no closed-loop or jump. In that case, they would not pick up a signal in one part of the nervous system and transfer it to another. Rather, they make the target region of the nervous system -- the more peripheral part -- more sensitive to the natural-but-disrupted signals from the controlling region. I think this is really awesome -- and could be supremely meaningful for this particular patient population -- but the tech seems a lot less sophisticated than the sorts of brain interfaces that are out there. Will appreciate any corrections.\n\n&amp;#x200B;\n\nEDIT: When I say \"less sophisticated\", I mean in the sense of the computation required to translate signals. I don't mean to diminish this contribution in any way. It's very cool.\n\nEDIT 2: Took a stab at [explaining what I mean](https://www.reddit.com/r/science/comments/9ir7g9/man_paralysed_from_waist_down_since_2013_makes/e6nhliy).", "score": 56, "polarity": 0.13, "word_count": 184}, {"author": "kerrigor3", "body": "This is sort of right.\n\nDiesel vs. gasoline is actually pretty complex. Diesel engines naturally give off more NOx however modern diesels in developed markets have aftertreatment systems to remove these gases. This makes them more expensive, but actually cleaner than gasoline. \n\nThe same goes for particulates, which are suspected carcinogens within cities. Diesel exhaust naturally contains more particulates but modern diesels are required to have filters which actually makes them cleaner than gasoline in this regard. Gasoline particulate filters are on their way in the EU and perhaps the US, political-situation depending. Particulates also contribute to smogs.\n\nSulphurous gases are a chief cause of smogs and these have largely been eliminated in both diesel and gasoline; ultra-low sulfur diesel came later hence the misconception that modern diesels still cause smog.\n\nAnother problem with pollution is that trains and shipping in coastal cities are also a contributor.", "score": 1, "polarity": 0.13, "word_count": 149}, {"author": "popover", "body": "Now this is interesting. When I look at wider faces, I always think back to my animal behavior class where we learned that predatory animals have eyes forward facing, in front of the face, to allow them to have better depth perception when hunting. This is in contrast to prey animals that tend to have their eyes on the side of their face, allowing them a better range of vision to see if there is a predator coming toward them. I wonder if humans are instinctively doing some kind of mental math to distinguish predator v. prey here. But then, how does that relate to behavior? Are these people products of a lifetime of stereotyping or do that have evolutionary predator-prey histories which drove their facial structure? Hmm, very interesting indeed.", "score": 146, "polarity": 0.33, "word_count": 132}, {"author": "DeathByBamboo", "body": "&gt; How many lives potential could be saved by a semiautomatic rifle ban?\n\nJust using the numbers from the OP, 1.75 people per \u201cactive shooter\u201d event. Probably closer to 1.5 people per shooting because there are still going to be some rifles out there. But over time as rifles became more rare they\u2019d be used less and the number of lives saved per shooting would go up. \n\nEven if it was as low as 1 person per shooting, if I\u2019m that person, or the relative or friend of that one person, that\u2019s worth it to me.", "score": 0, "polarity": 0.14, "word_count": 101}, {"author": "quincy_p_jackson", "body": "That's not entirely accurate, is it? I've only spent about 5 minutes skimming this article (being lazy), so I very well could be wrong. But it seems like they are \"facilitating\" transmission ... meaning that there is no closed-loop or jump. In that case, they would not pick up a signal in one part of the nervous system and transfer it to another. Rather, they make the target region of the nervous system -- the more peripheral part -- more sensitive to the natural-but-disrupted signals from the controlling region. I think this is really awesome -- and could be supremely meaningful for this particular patient population -- but the tech seems a lot less sophisticated than the sorts of brain interfaces that are out there. Will appreciate any corrections.\n\n&amp;#x200B;\n\nEDIT: When I say \"less sophisticated\", I mean in the sense of the computation required to translate signals. I don't mean to diminish this contribution in any way. It's very cool.\n\nEDIT 2: Took a stab at [explaining what I mean](https://www.reddit.com/r/science/comments/9ir7g9/man_paralysed_from_waist_down_since_2013_makes/e6nhliy).", "score": 56, "polarity": 0.13, "word_count": 184}, {"author": "TheWhiteUrkle", "body": "What happened with you is your tapered down over time to a low enough dose that you're brain was able to adjust to producing its own endorphins again. The word endorphins comes from \"endogenous morphine\u201d,\u00a0meaning morphine produced internally. When our body gets fed them and doesn't have to produce them naturally to help with pain it kinda forgets how for a while. The process of abruptly stopping the supply of the morphine/opiates that the body got used to not having to provide is why we feel withdrawal, and why it's extra painful until the brain can catch up. \n\nWhen you cut down you did exactly what everyone should do and what every Dr should push for and be more hands on about. Most Dr's are not and don't mind throwing a patient out after a few months or for a bad urine sample. That leads to inevitable extreme pain which leads to that person seeking other means to get opiates, just to get rid of the pain. That leads people to heroin or Dr shopping. Both usually lead to jail, which leads to more heroin. I'm not blaming just the Dr's, but a lot of heroin addicts could be avoided by a proper taper where the patient never has to experience any of that.\n\nAnother thing is yes, the tolerance build up definitely effects the euphoric aspect the most. If you noticed, that pleasure began to decrease quicker each day. One morning you decide to take two 30's instead. Feels great so you do it for a week. Now when you go back to one 30 you hardly fell it, and since your body started adjusting to the extra amount you don't even get the same pain killing effects from it anymore. Basically, once you start using it to get high it's a downward spiral.\n\nEveryone can taper like you did though. Like in my instance I had to taper off methadone for a year, then switch to suboxone and continue tapering for it to finally not be Hell where I had to take off work for weeks to go to a rehab.", "score": 1, "polarity": 0.05, "word_count": 365}, {"author": "CharmedConflict", "body": "So what they found was that a one-sized fits all approach to a relatively new field of gastrointestinal medicine wasn't ideal. Amazing. \n\nA few factoids about your GI flora:\n\n* Your gut has over 6000 unique species of bacteria indigenously living along its walls.\n\n* Most (freeze-dried) probiotic capsule mixes contain only a handful of different species.\n\n* Cultured items such as yogurt are just a concentration of a few strains.\n\n* Ingested bacteria has to survive the digestion process. The digestion process also happens to be designed to prevent such bacteria from thriving (although those defense mechanisms can be overwhelmed).\n\n* After surviving the digestion process, the bacteria still have to make it to the \"river's edge\" and find a hand hold. It's no guarantee and most will be swept along the chocolate current.\n\n* Sometimes it's your indigenous bacteria that IS the problem, so the fact that some people's normal GI bacteria give way to the probiotic strains isn't always indicative of a bad thing.\n\nBasically, probiotic supplementation is a really primitive approach to something that we're only beginning to understand is a very complex ecosystem. It is the literal application of the saying \"let's throw things against this guy's colon to see what sticks.\" But before we throw the baby out with the bath water, know that probiotic therapy, especially following dysbiosis (that's the equivalent of napalming your native villages of GI flora with antibiotics) is one of the best quick fixes we have.\n\nThis is the same comment I posted yesterday to the press release of the same study. I find it's still relevant today.", "score": 317, "polarity": 0.15, "word_count": 276}, {"author": "duckhunttoptier", "body": "now i am really critical of the US's stance on environmental policies, healthcare, and so on. But you can't just say we're complete garbage...\n\nWe're the world's center when it comes to military strength and more importantly, economics. We have an incredibly high GDP and many countries aspire to have a GDP like ours, as a high GDP means so much more for our country.\n\nDoes our capitalist system also lead to crazy poverty levels, a huge wealth inequality, and a failure to lead the world to an eco-friendly planet? yes, and those problems should be fixed... but we can't discredit what we've done so far.", "score": 1, "polarity": 0.12, "word_count": 114}, {"author": "iron-while-wearing", "body": "&gt; so in a way, yes, the US has manipulated Honduras and El Salvador in decades.\n\nI don't think you can compare criminals and a rampant culture of criminality to some kind of deliberate US intervention. The alternative was keeping those people in the US, where they could inflict this kind of violence on Americans. Their criminality is not America's fault. \n\nI suppose the alternative was throwing all the MS-13 members out of the plane on the flight south. Hindsight 20/20. They had to go somewhere, they weren't US citizens and they couldn't stay here.", "score": 7, "polarity": 0.6, "word_count": 101}, {"author": "Teggz", "body": "Afaik broad faces (at least in men) have been linked to both high testosterone and lower percieved trustworthiness before. In the articles that I've read those two werr implied to have somewhat of a causal link, so we trust people with higher testosterone less. So I don't think you're prey theory makes sense since the broad face is just a hormonal thing.\n\nI'm no expert though and haven't read the actual studies just atricles so I might be wrong.", "score": 64, "polarity": -0.05, "word_count": 84}, {"author": "ariehn", "body": "We might actually have an answer to that if the photos were available :)\n\nIf I'm doing a ['no makeup'](https://gabrielcosmeticsinc.com/media/2018/04/GC-No-Makeup-Tips.jpg) look, for instance -- man, I'm going to be wearing a *lot* of makeup.  That's not a photo of me, but it *is* a look which took considerable time and required seven individual makeup products. Would men and women feel that such a look signals 'gimme some casual sex', though? Are most guys even going to think she's wearing makeup at all?\n\nI imagine that when most men think of makeup, they're picturing something more like [this](https://images-production.freetls.fastly.net/uploads/posts/image/161636/what-happened-to-nikkie-tutorial-brother.jpg) -- and I strongly suspect the dividing lines between those photographs involved how *evident* the makeup was ... not necessarily how much of it was being worn.", "score": 3, "polarity": 0.21, "word_count": 153}, {"author": "tragoedian", "body": "How does legalizing a substance that a huge percentage of the population consumes create another crutch? They are already using it. All that happens with criminalization is the punishment of innocent people for an act that hurts no one but the person making the decision, and in many cases actively benefits the person.\n\nAlso, would you rather people lean on alcohol or marijuana? This is not a frivolous question. People WILL choose to use some state altering substance. That is a fact. Marijuana causes fat less harm than alcohol, hands down. Hell, marijuana is safe than opioids and in many cases a better fit for pain management strategies.", "score": 15, "polarity": 0.28, "word_count": 108}, {"author": "lynx_and_nutmeg", "body": "I tried it for 3 days once (without being fat-adapted). The first 1,5 days were very easy and nice, then I started getting progressively more restless and tense. No headaches, dizziness or irritability and my focus was even too sharp, but I couldn\u2019t sleep at all.\n\nIt seems great for emergency situations when you need to stay sharp and alert for extended periods of time, but I think my body did perceive it as an emergency and felt stressed, it was a sort of high-strung energy.\n\nHowever, I haven\u2019t tried fasting on keto, I think it would be different.", "score": 13, "polarity": 0.24, "word_count": 104}, {"author": "Tiny11231", "body": "For medicinal uses, I\u2019m all for. But to purchase for recreational use I\u2019m not. \n\nThe same argument your stating was used for every other drug at one point. The only drug that was legal and removed was cocaine and even heroine.  \n\nAnd getting facts from a study is nothing compared to real world exposure, living in Neighborhoods that have been completely taken over by marijuana, You have no clue. Keep reading your case studies, making marijuana federally legal will never happen.", "score": -24, "polarity": 0.08, "word_count": 83}, {"author": "godOmelet", "body": "Just judging by the amount of therapist-mediated help he needs, it looks like this is still very early in development. He's unable to lock his knees without help and they are helping him make other minute adjustments that are required to maintain a proper gait. It's still exciting, but it looks like a lot of additional signal processing is required to help him and others become independently capable of walking/movement. \n\nThat said, it's crazy that the kind of stuff as featured in that movie \"Upgrade\" is coming closer and closer to being reality, even if only in broad strokes. Imagine in the future normal people being able to 'download' skillsets of expert-level tennis players, or martial artists like the Matrix, but with your own body as the recipient, and not some digital avatar.", "score": 23, "polarity": 0.08, "word_count": 139}], "1": [{"author": "Behemothical", "body": "Aussie here! Care to share any of those?", "score": 1, "polarity": 0.0, "word_count": 8}, {"author": "lordzsolt", "body": "Kudos for taking the time and pointing this out.", "score": 261, "polarity": 0.0, "word_count": 9}, {"author": "NakayaTheRed", "body": "Yes, you should spend all your time researching it.", "score": 6, "polarity": 0.0, "word_count": 9}, {"author": "kooolk", "body": "People who haven't walked for years have severe muscle atrophy, which make the recovery even harder than just fixing the signals.", "score": 33, "polarity": -0.1, "word_count": 22}, {"author": "blood_bag", "body": "Perhaps because we're so unhealthy?", "score": 30, "polarity": -0.4, "word_count": 6}, {"author": "LubbockGuy95", "body": "The fact that all their car manufactures lie about their pollution rate and threaten and bully governments who bring this up is not helping in any way.", "score": 641, "polarity": 0.0, "word_count": 27}, {"author": "WeaverBailey", "body": "Why hasn't a hybridoma to produce these antibodies been made yet? It would cost $$$ to manufacture, but plenty of other medications are biologics.", "score": 42, "polarity": -0.12, "word_count": 24}, {"author": "MFAWG", "body": "Mass shootings with removable magazine fed semiautomatic rifles have gone way up since 2004.", "score": -6, "polarity": 0.0, "word_count": 14}, {"author": "Maxcrss", "body": "I\u2019m American and I don\u2019t either!", "score": -2, "polarity": 0.0, "word_count": 8}, {"author": "cockroach_army", "body": "My hunting rifles are all semi-automatic (self loading)...", "score": 1, "polarity": 0.0, "word_count": 9}, {"author": "goofdup", "body": "don't forget the us military. the world's biggest polluter.", "score": 0, "polarity": -0.1, "word_count": 11}, {"author": "apennypacker", "body": "But their information was not correct.", "score": 38, "polarity": 0.0, "word_count": 6}, {"author": "publicTak", "body": "Success at what? What do you think we are talking about here?", "score": -1, "polarity": 0.3, "word_count": 12}, {"author": "blood_bag", "body": "Perhaps because we're so unhealthy?", "score": 30, "polarity": -0.4, "word_count": 6}, {"author": "im_dead_sirius", "body": "My tinnitus goes away when I get anesthesia for dental work.", "score": 2, "polarity": 0.0, "word_count": 11}], "2": [{"author": "bigbrycm", "body": "Nice low blow there lumping religion in there", "score": -65, "polarity": 0.3, "word_count": 8}, {"author": "Cartoonzinho", "body": "It's an exaggeration to say most med schools want to see scribing on applications. It looks good, but is nowhere near a requirement.", "score": 10, "polarity": 0.43, "word_count": 24}, {"author": "ribnag", "body": "Fair enough - I was actually thinking something along those lines myself, but was hoping someone might know more about this study than the somewhat light version written up at the OP's link.\n\nThanks!", "score": 1, "polarity": 0.31, "word_count": 34}, {"author": "FartIntoMyButt", "body": "Of course it matters. \n\nYou know Philip Morris funded studies in the 50s that showed cigarettes were good for you?", "score": 84, "polarity": 0.7, "word_count": 20}, {"author": "PM_Me_Your_Deviance", "body": "Humans are notoriously unreliable narrators, even about our own feelings.", "score": 1, "polarity": 0.6, "word_count": 10}, {"author": "Milam1996", "body": "The problem is finding living tissue. Our best hope is that mammoth that was found perfectly preserved in ice but now we have to find living cells", "score": 11, "polarity": 1.0, "word_count": 27}, {"author": "germancentipede", "body": "People need to build up democratic institutions in their own countries. When dissidents are always fleeing into the free world then their countries will never change. The oppressed people of the world need to rise up and fight for justice and their rights like our ancestors did before. Otherwise nothing will ever change.", "score": 11, "polarity": 0.5, "word_count": 53}, {"author": "WeaverBailey", "body": "Side effects should be minimal since the antibody would be against something exogenous (a viral protein). But I imagine HIV already evades the immune system somehow? An expert opinion is welcome.", "score": 2, "polarity": 0.35, "word_count": 31}, {"author": "bigbrycm", "body": "Nice low blow there lumping religion in there", "score": -65, "polarity": 0.3, "word_count": 8}, {"author": "Gow87", "body": "Nah. We like to whinge, that's all. The UK is actually one of the most efficient and has good outcomes. It's just in our nature to complain about everything!", "score": 2, "polarity": 0.46, "word_count": 31}, {"author": "BoinkBoinkEtAliae", "body": "Congrats on one of the dumbest, most unscientific things I've ever read", "score": 2, "polarity": 0.5, "word_count": 13}, {"author": "Holden_D_Znuts", "body": "Is there a way to advance this technology to the point where we'll be able to implant something akin to \"bionic\" nerves?", "score": 406, "polarity": 0.5, "word_count": 23}, {"author": "Cartoonzinho", "body": "But that's not even true.", "score": -1, "polarity": 0.35, "word_count": 6}, {"author": "SecularBinoculars", "body": "Welcome to the majority of white peoples lifes to. Whites dont own things to. But a white elite does in the west.", "score": 5, "polarity": 0.35, "word_count": 22}, {"author": "agroovyman", "body": "America. The most prosperous country in the planet.", "score": -71, "polarity": 0.5, "word_count": 8}], "3": [{"author": "Astronale", "body": "Honestly, cars are a small fraction of the issue, factories, power plants, agriculture, all dwarf the impact that cars have, not to say that cards dont contribute, but even if they were all converted to electric in a snap of a finger doesnt mean that suddenly all the electricity they now require are from non-polluting means. \n\nIt also doesnt change much at all.", "score": 210, "polarity": 0.05, "word_count": 64}, {"author": "StrangeCharmVote", "body": "&gt; Nice low blow there lumping religion in there\n\nIt's been proven multiple times to be a correlating/contributing factor to pretty much every negative statistic on the books.\n\nSo it only makes sense to list it when it's relevant to do so.", "score": 39, "polarity": 0.14, "word_count": 45}, {"author": "Maxerature", "body": "Would math REALLY be more annoying in a different base?  I don't think so.  I'm part of the camp which says we need to switch to base 12 so I *may* be somewhat biased.  Also as a computer scientist, I also really like base 16.", "score": 19, "polarity": -0.36, "word_count": 47}, {"author": "TeaP0tty", "body": "&gt; CO2 is the leading GHG hands down\n\nNope. Leading, yes. But methane is very significant, and rising in both concentration and potency every year.", "score": 1, "polarity": 0.17, "word_count": 25}, {"author": "captainpotty", "body": "Really, we should be criticizing the people who publicize and misreport research like this.", "score": 1, "polarity": 0.2, "word_count": 14}, {"author": "cunninglinguist32557", "body": "Don't tell me what I'm confused about. I'm literally studying this exact issue in psychology. What you're describing is a categorical approach, or \"you have it or you don't.\" I'm arguing that a dimensional approach, with everyone falling on a continuum of traits, makes more sense when trying to understand autism.", "score": 1, "polarity": 0.12, "word_count": 57}, {"author": "Nyri0", "body": "Well, the results in the US are not surprising given that many people suffering from chronic conditions can't afford the expensive healthcare. \n\nThe results for UK are a bit disappointing, because the country has good public healthcare, but weirdly lagging ten years behind other European countries in terms of cancer survival rates. \n\nIn China, health insurance covers only a low proportion of healthcare costs, which makes expensive treatments like chronic diseases not affordable for many people.", "score": 53, "polarity": -0.09, "word_count": 77}, {"author": "9Blu", "body": "This was one of the standard labs we did in first year microbio at my university.  Results every year are always the same.  Hand driers are filthy.  One reason is they never get cleaned, so they end up colonized.", "score": 5, "polarity": -0.14, "word_count": 39}, {"author": "CreativeVerge", "body": "Men are biologically driven to objectify women on their appearance and women are biologically adapted to this by painting their faces and fastidious personal grooming. It is perfectly natural for a man to be attracted to a woman or for a man to prefer women who are attracted to women as well. Men are biologically driven to spread their seed wide and women are driven to nest. This is basic shit.", "score": -2, "polarity": -0.04, "word_count": 71}, {"author": "just5words", "body": "Why should raising a female child be any different than a male child?  Until puberty, they are very much the same.  As well, how would you explain him saying that a female child would be entirely \"other\".  Sounds like he's describing something alien to him does it not.  I am not offended.  I am just aghast that people like this either are parents, or could be parents.", "score": 5, "polarity": -0.08, "word_count": 68}, {"author": "zombie4374", "body": "If the information is correct, it doesn't really matter who funded it. I hate it when a restroom doesn't have paper towels", "score": 64, "polarity": -0.3, "word_count": 24}, {"author": "SolelyCurious", "body": "Well, yea. Media only shows people of color as one dimensional stereotypes (if they're shown at all) and neighborhoods/schools are still largely segregated.", "score": 14, "polarity": 0.11, "word_count": 25}, {"author": "MFAWG", "body": "Wikipedia is your friend here.\n\nThis is a tired discussion that\u2019s not worth having anymore.", "score": -14, "polarity": -0.28, "word_count": 16}, {"author": "SolelyCurious", "body": "You're talking about something completely unrelated to the topic here. Poor white people don't have any problems due to their race. They have problems due to their socioeconomic status. People of color tend to have problems due to both race *and* socioeconomic status. This is like walking up to a poor blind kid and claiming you have it just as bad because you're poor.", "score": -1, "polarity": -0.27, "word_count": 67}, {"author": "SolelyCurious", "body": "Well, yea. Media only shows people of color as one dimensional stereotypes (if they're shown at all) and neighborhoods/schools are still largely segregated.", "score": 14, "polarity": 0.11, "word_count": 25}]}, "politics": {"0": [{"author": "Nibble_on_this", "body": "Not true. People, especially women, are the opposite of \"meh\" on this topic.\n\n&gt;If there\u2019s cause for hope in these horror-show days, it\u2019s this: the Republican party has no idea what\u2019s about to hit it this November.\n\n&gt;Even the dimmest and most misogynist of Republican operatives must realize, by this point, that the supreme court nomination of Brett Kavanaugh and the handling of the sexual assault allegations against him will hurt their chances, especially with women voters, in the upcoming midterm elections.\n\n&gt;What they don\u2019t seem to realize, though, is that huge numbers of women aren\u2019t just mad \u2013 they\u2019re organized and mobilized politically in a way we\u2019ve never quite seen before. The key story of the midterms is the large number of progressive women \u2013 and to a lesser extent, progressive men \u2013 who have been taking on the crucial, unglamorous work that swings elections: registering voters, canvassing door-to-door, preparing to get people to the polls. The disdain for women that the Republicans have shown by continuing to rally behind Kavanaugh is only energizing them further.\n\nhttps://www.theguardian.com/commentisfree/2018/sep/25/republican-party-face-wrath-women", "score": 33, "polarity": 0.03, "word_count": 200}, {"author": "TanukiForHire", "body": "A policy that started as a means of making it legal to bust the head's of nixon's enemies.  \n\n\n*\"The Nixon campaign in 1968, and the Nixon White House after that, had two enemies: the antiwar left and black people. You understand what I'm saying? We knew we couldn't make it illegal to be either against the war or black, but by getting the public to associate the hippies with marijuana and blacks with heroin, and then criminalizing both heavily, we could disrupt those communities. We could arrest their leaders, raid their homes, break up their meetings, and vilify them night after night on the evening news. Did we know we were lying about the drugs? Of course we did.\"*\n\n&amp;#x200B;\n\n\\~ John Ehrlichman, Domestic policy chief for President Richard Nixon", "score": 5, "polarity": -0.09, "word_count": 134}, {"author": "Adjective_Noun2", "body": "Liberals and democrats think and believe a lot of stuff, and I agree with almost all of it. I agree with them on abortion, the environment, foreign policy, education, healthcare, and could probably get there on economy too.\n\nBut I'm sorry, I just won't support a party that wants to eliminate my people. I could never vote for a democrat as long as their position is to elevate their \"coalition of the ascendant\" above white people. I love white people and don't want them eliminated. The fact that you think that's racist is proof of just how bad the brainwashing is on that side of the aisle.", "score": -26, "polarity": -0.07, "word_count": 111}, {"author": "Manchurainprez", "body": "1) the FBI doesnt investigate these types of crimes.\n\n2)  what are they going to find, we are all publically witnessed to the eviddence available.  We dont know who, wehn, or where and the only people said to be witnesses other than the accusers say it didnt happen.\n\nUnlike the fantasy world of the far left, male and female testimony holds the same wieght.  So the investigation will find that there is no way to know if it did or did not happen if Kavanaugh or Judge were involved at all or if it is even paritally true or untrue. \n\nThats the point of these wild accusations,  You cant say it didnt happen, and you cant say it did.  Which is why its damaging for real casses because it breaks down our understanding of justice and it causes suspicion and skeptcism. \n\nCongradulations everybody lets see how insane this can get before the violence starts.", "score": 0, "polarity": -0.01, "word_count": 154}, {"author": "nyonpa108", "body": "&gt; are democrats\n\nAnd what do democrats believe? What do liberals think? You don't know, do you?\n\nComment: I know this is likely a you-know-what account, but I feel it is important to respond, even in simple snark, to attempts to demoralize the resistance. I do not let even obvious robo-comments go unanswered because I feel the negative stupidity, as here, needs to be slapped down whenever possible.\n\nthis is also straight ahead knuckle-dragging racism.\n\nBesides, contrary to the whole \"librul tears\" thing, it's quite fun and relaxing.", "score": 3, "polarity": -0.0, "word_count": 94}, {"author": "out_of_ideas123", "body": "yawn.  If this was a magical tactic then they would have used it on Gorsuch too.  They didn't....because he didn't assault anybody.  See how that works?  Also, how is it backfiring...republicans postponed the vote...republicans have no shame so if they postponed the vote it is because they know they couldn't get him through which means he doesn't have rock solid support among republicans either and it would risk embarrassment by him not getting enough votes.  Use your head instead of choking out boring far-right fantasy garbage.", "score": 12, "polarity": -0.12, "word_count": 94}, {"author": "HeirOfElendil", "body": "I think that there are really too many to name. From the war on drugs to subsidizing tourism in Jordan, the federal government puts its hands into places it has no business being. I think there are very few things the government should be doing, and I think a flat income tax of 10-20% could take care of all of it. And I mean that would be the ONLY tax, no sales tax, no death tax, no capital gains tax, etc. When you're spending other people's money on other people, it's very easy to be wasteful.", "score": -4, "polarity": 0.05, "word_count": 100}, {"author": "ssbmhero", "body": "I've been saying this for a year now. I think he will start a war.\n\nSome of the only times the left wing media has praised Trump's actions are when he has bombed Syria. \n\nTrump is the basic knowledge of history to see or be told the pattern that wars = higher approval ratings. \n\n\nHis only trouble will be coming up with a reason. \n\nCountries of likely invasion I would say are Iran then Syria then venzuela then north Korea. \n\nThis will get worse before it gets better", "score": 51, "polarity": 0.02, "word_count": 89}, {"author": "mclumber1", "body": "It might even be difficult to do so at Tesla, because of things like liability and insurance.  I'm afraid that most companies will continue to enforce current marijuana restrictions until a reliable method is developed to determine if they are currently high.\n\nThe problem with current testing methods is that it only tells you if you have used marijuana in the last few weeks, not necessarily if you are high right now.  For an assembly line worker, or any other job, it is important you are not under the influence of drugs or alcohol, as you are working around machinery that could easily mangle or kill you if you lose your concentration.", "score": 8, "polarity": 0.04, "word_count": 113}, {"author": "howhardcoulditB", "body": "Deuteronomy 22:23-24 New International Version (NIV)\n\n23 If a man happens to meet in a town a virgin pledged to be married and he sleeps with her, 24 you shall take both of them to the gate of that town and stone them to death\u2014the young woman because she was in a town and did not scream for help, and the man because he violated another man\u2019s wife.\n\nDeuteronomy 22:28-29 New International Version (NIV)\n\n28 If a man happens to meet a virgin who is not pledged to be married and rapes her and they are discovered, 29 he shall pay her father fifty shekels[a] of silver. He must marry the young woman, for he has violated her. He can never divorce her as long as he lives.", "score": 10, "polarity": 0.1, "word_count": 135}, {"author": "howhardcoulditB", "body": "Deuteronomy 22:23-24 New International Version (NIV)\n\n23 If a man happens to meet in a town a virgin pledged to be married and he sleeps with her, 24 you shall take both of them to the gate of that town and stone them to death\u2014the young woman because she was in a town and did not scream for help, and the man because he violated another man\u2019s wife.\n\nDeuteronomy 22:28-29 New International Version (NIV)\n\n28 If a man happens to meet a virgin who is not pledged to be married and rapes her and they are discovered, 29 he shall pay her father fifty shekels[a] of silver. He must marry the young woman, for he has violated her. He can never divorce her as long as he lives.", "score": 10, "polarity": 0.1, "word_count": 135}, {"author": "Adjective_Noun2", "body": "Liberals and democrats think and believe a lot of stuff, and I agree with almost all of it. I agree with them on abortion, the environment, foreign policy, education, healthcare, and could probably get there on economy too.\n\nBut I'm sorry, I just won't support a party that wants to eliminate my people. I could never vote for a democrat as long as their position is to elevate their \"coalition of the ascendant\" above white people. I love white people and don't want them eliminated. The fact that you think that's racist is proof of just how bad the brainwashing is on that side of the aisle.", "score": -26, "polarity": -0.07, "word_count": 111}, {"author": "HeirOfElendil", "body": "I think that there are really too many to name. From the war on drugs to subsidizing tourism in Jordan, the federal government puts its hands into places it has no business being. I think there are very few things the government should be doing, and I think a flat income tax of 10-20% could take care of all of it. And I mean that would be the ONLY tax, no sales tax, no death tax, no capital gains tax, etc. When you're spending other people's money on other people, it's very easy to be wasteful.", "score": -4, "polarity": 0.05, "word_count": 100}, {"author": "buyfreemoneynow", "body": "The anthem glorifies that one time we tried to take over Canada because we wanted to murder indigenous Americans for the arable land that they wouldn't give to us, and since their sovereignty was never acknowledged by the American government it made sense at the time to just go ahead and kill whoever had to be killed to get the land grow the 'conomy. In response, England told us to fuck off then burned down White House.\n\nThere's even a stanza in there (that you will never hear unless you look for it) that glorifies the massacring of slaves who had been conscripted by the British and offered their freedom in return. I would say that that the subject of the National Anthem should be a point of humiliation given today's general moral standards. \n\nTL;DR The National Anthem glorifies an aggressive war that was wildly unpopular, that we started (and sentiment was built using fabricated intelligence, even! Iraq wasn't the first time!) on home turf, where we drastically outnumbered the foreign defending force but still managed to take nearly twice as many soldiers KIA, and we achieved nothing for it. The best thing about the National Anthem is Colin Kaepernick pissing off stupid \\[mostly white\\] people.", "score": 1, "polarity": 0.01, "word_count": 211}, {"author": "Nibble_on_this", "body": "Not true. People, especially women, are the opposite of \"meh\" on this topic.\n\n&gt;If there\u2019s cause for hope in these horror-show days, it\u2019s this: the Republican party has no idea what\u2019s about to hit it this November.\n\n&gt;Even the dimmest and most misogynist of Republican operatives must realize, by this point, that the supreme court nomination of Brett Kavanaugh and the handling of the sexual assault allegations against him will hurt their chances, especially with women voters, in the upcoming midterm elections.\n\n&gt;What they don\u2019t seem to realize, though, is that huge numbers of women aren\u2019t just mad \u2013 they\u2019re organized and mobilized politically in a way we\u2019ve never quite seen before. The key story of the midterms is the large number of progressive women \u2013 and to a lesser extent, progressive men \u2013 who have been taking on the crucial, unglamorous work that swings elections: registering voters, canvassing door-to-door, preparing to get people to the polls. The disdain for women that the Republicans have shown by continuing to rally behind Kavanaugh is only energizing them further.\n\nhttps://www.theguardian.com/commentisfree/2018/sep/25/republican-party-face-wrath-women", "score": 33, "polarity": 0.03, "word_count": 200}], "1": [{"author": "TrumpSucksMyBalls", "body": "The SCOTUS ruling protected kids from saluting because it is considered a primitive utterance. The same could be saif about being forced to stand.", "score": 6, "polarity": -0.15, "word_count": 24}, {"author": "not_nibiru", "body": "Where I regularly argued against Trump supporters...", "score": 0, "polarity": 0.0, "word_count": 7}, {"author": "Usernamesareoutdated", "body": "The Party of Family Values!", "score": 89, "polarity": 0.0, "word_count": 5}, {"author": "DaggerMoth", "body": "I don't know what a disgaea or a prinny is. Is that a british thing or something?", "score": 3, "polarity": 0.0, "word_count": 18}, {"author": "SiberianPermaFrost_", "body": "Did Beto ask for Avenatti\u2019s help?", "score": 6, "polarity": 0.0, "word_count": 7}, {"author": "BedWedOrBehead", "body": "Relevance?\n\nI appreciate that you're taking the time to read up on this issue, but I can't see what you're getting at.", "score": 1, "polarity": 0.0, "word_count": 25}, {"author": "Riotsquad9000", "body": "Thanks, Vichy law professor!", "score": -24, "polarity": 0.25, "word_count": 4}, {"author": "RedditPoliticsIsDumb", "body": "What does it have to do with Trump?", "score": -5, "polarity": 0.0, "word_count": 8}, {"author": "Itchycoo", "body": "That feeling when you become a parody of yourself...", "score": 3, "polarity": 0.0, "word_count": 9}, {"author": "RobbingtheHood", "body": "Yes, I understand that. Psychiatry at its core is still a pseudoscience - i.e., the DSM-V is like 70-80% bullshit.", "score": -20, "polarity": 0.0, "word_count": 22}, {"author": "7point7", "body": "So did Newton and Einstein...", "score": 3, "polarity": 0.0, "word_count": 5}, {"author": "Hotwingz4life720", "body": "How do you know he is?", "score": 1, "polarity": 0.0, "word_count": 6}, {"author": "LoveandRockets", "body": "Isn't that the Triffin dilemma? Maybe one of his advisers could explain it to him.", "score": 25, "polarity": 0.0, "word_count": 16}, {"author": "SouthernJeb", "body": "Ever heard of triage?", "score": 6, "polarity": 0.0, "word_count": 4}, {"author": "MesaBoogeyMan", "body": "I agree.", "score": 2, "polarity": 0.0, "word_count": 2}], "2": [{"author": "RosesAreBad", "body": "I'm pretty sure Jesus wasn't pro-rape.", "score": 36, "polarity": 0.38, "word_count": 9}, {"author": "Adjective_Noun2", "body": "You may. Let me guess, your next comment is something like \"well *I* sure don't relate to other white people! I'm one of the good ones, I don't care about my people being murdered at all. Please Jose, kill me last?\"", "score": -22, "polarity": 0.18, "word_count": 44}, {"author": "MysticRay", "body": "More feels and hyperbole stated as fact.", "score": 0, "polarity": 0.5, "word_count": 7}, {"author": "RosesAreBad", "body": "I'm pretty sure Jesus wasn't pro-rape.", "score": 36, "polarity": 0.38, "word_count": 9}, {"author": "Endorn", "body": "He... wait... are you saying him getting rid of super delegates was undemocratic?", "score": 11, "polarity": 0.33, "word_count": 13}, {"author": "xX_LaserLotus_Xx", "body": "True to form.", "score": 879, "polarity": 0.35, "word_count": 3}, {"author": "peraspera441", "body": "It will be interesting to see if Avenatti will be able to translate his media skills into effective organizing skills.", "score": 209, "polarity": 0.53, "word_count": 20}, {"author": "CarmineFields", "body": "It\u2019s important to be aware of it in case there is a \u201cterrorist\u201d attack on America.", "score": 1, "polarity": 0.33, "word_count": 17}, {"author": "WienerNuggetLog", "body": "Tax paying members of community can not participate in a representative democracy just because of racist boarder policies.  just making sure I'm getting this all right", "score": -17, "polarity": 0.39, "word_count": 27}, {"author": "ssbmhero", "body": "Way more costly for Iran though they would accept any peace deal we put infront of them. \n\nAfter the invasion if their gov wanted to retain control they would have to sue for peace.", "score": 1, "polarity": 0.5, "word_count": 34}, {"author": "wil_daven_", "body": "The internet is pretty big. I\u2019m sure we can both exist without too many problems.", "score": 13, "polarity": 0.31, "word_count": 16}, {"author": "jtclimb", "body": "That's so stupid! Lead is far too buoyant to sink, right?", "score": 2, "polarity": -0.2, "word_count": 12}, {"author": "zeeneri", "body": "I mean, the primary argument was to abolish the superdelegates altogether. I'm pretty sure the notion that they should overturn Clinton's popular vote was mostly pushed by Russian operatives.", "score": 2, "polarity": 0.28, "word_count": 31}, {"author": "ayyy__1mao", "body": "No it\u2019s not.\n\nDetention of families who enter the country without documentation, including children, has happened for many years. The Trump administration has greatly expanded it, but it\u2019s not new.", "score": 13, "polarity": 0.41, "word_count": 32}, {"author": "Brad_tilf", "body": "Since he's already lied before (provably) and the R's are determined to push him through anyway, I don't see how him lying now will make any difference, honestly", "score": 253, "polarity": 0.6, "word_count": 31}], "3": [{"author": "--xra", "body": "And yet they're not out here raping children, either. The *P* really does stand for *projection*.", "score": 17, "polarity": 0.2, "word_count": 17}, {"author": "lifehacker421-1", "body": "this is an accusation in which there is no defense.\n\nIt is literally unprovable and also impossible to prove innocence as well.\n\nThat's why its so incredibly dirty.\n\nI know r politics wouldn't care if every single woman Brett ever met said he was a gentlemen. Because this cesspool of a sub believes the ends justify the means.\n\nI truly think this is going to backfire on the dems.", "score": -51, "polarity": -0.45, "word_count": 71}, {"author": "WayneKrane", "body": "Hmm, says he\u2019s never been that drunk yet many people have commented on his drinking habits. I could care less about the rape allegations, it\u2019s the fact that he is straight up lying about his drinking that gets me.", "score": 13, "polarity": 0.01, "word_count": 41}, {"author": "TyphoonCane", "body": "You know what, this guy has his act together. He went straight to the heart of the lies of the nominee and fettered out the likely date and place of the event using Kavanaugh's own calendar. Thank you senator Whitehouse, and thank you Rhode Island for electing that man.", "score": 408, "polarity": 0.27, "word_count": 50}, {"author": "anti-unique_username", "body": "How is it that every single voter in this entire country didn't realize this from the very beginning? I knew it. Lots of people knew it. Hell, Putin knew it! What the fuck is wrong with the Evangelicals? What the fuck is wrong with Republicans in the congress? How can they stand by and facilitate a situation like this? Serious question. \n\n&amp;#x200B;\n\nThe fascists need to be voted out of power and kept out, permanently. Every life on this planet is on the line.", "score": 352, "polarity": -0.24, "word_count": 86}, {"author": "John-AtWork", "body": "If all that I true, you should have less hate in your heart.", "score": 1, "polarity": -0.21, "word_count": 13}, {"author": "RELEASE_PEE-PEE_TAPE", "body": "I guess that's a theory, but that implies:\n\n1. He was campaigning against the person he *knew* would be the nominee, even calling her \"unqualified\"\n\n2. He was asking for donations *knowing* that he wouldn't be running for president\n\nSo that's not any better than him really wanting to overturn the vote.  It's worse, in fact.", "score": 0, "polarity": 0.1, "word_count": 60}, {"author": "butterfly105", "body": "You can\u2019t compare a physical injury diagnosis to a mental one. Not sure how they do things in Canada. I don\u2019t support this president but I also know when to be smart enough not to blindlessly accept a diagnosis without an actual examination.", "score": 0, "polarity": -0.02, "word_count": 45}, {"author": "RainyDay676", "body": "The national anthem at sporting events is bizarro to me. The idea that 22 meat heads can't give each other permanent brain damage without first staring at a flag while a 200-year old drinking song is sung is really very dumb.", "score": 67, "polarity": -0.07, "word_count": 43}, {"author": "Quinniper", "body": "This is the psychiatrist who organized the \u201cDuty to Warn\u201d movement &amp; conference and authored \u201cThe Dangerous Case of Donald Trump\u201d, wherein 27 psychiatrists and mental health experts assess Trump\u2019s dangerousness.\n\nThis is terrifying.", "score": 2338, "polarity": -0.57, "word_count": 35}, {"author": "theforlornknight", "body": "&gt;Americans really do deserve the politicians they get. \n\nAre you just copy and pasting this to every Avenatti article you can find?", "score": 13, "polarity": 0.2, "word_count": 23}, {"author": "Scarlettail", "body": "What is this saying exactly? I personally also am not a fan of affirmative action, but what exactly does Kavanaugh mean about an \"interim question\" on racial profiling?", "score": 2, "polarity": 0.13, "word_count": 28}, {"author": "RobbingtheHood", "body": "&gt;Certified Psychiatric Rehabilitation Practitioner here.\n\nThis reads like \"certified naturopathologist\" to me lmao\n\n&gt; And I wonder what large swath of depression, anxiety, mood disorder, addiction, schizophrenia, or paraphilia/phobia you think is bullshit.\n\nI don't think actual mental illness is bullshit, I think their made-up personality disorders like narcissism (i.e., the primary subject of this thread) are pseudoscience and just enable people into being dicks.", "score": -15, "polarity": 0.16, "word_count": 70}, {"author": "SiberianPermaFrost_", "body": "Why would he?   He\u2019s interested in the celebrity profile not that actual cause.  Avenatti is a kick arse lawyer but at the moment he\u2019s preparing the grounds to run for President all because his troll game is tight.", "score": 10, "polarity": -0.08, "word_count": 40}, {"author": "10110101010101010", "body": "The reason for the order is clearly for personal reasons and therefore unlawful. The DOJ and/or FBI cannot legally obey an unlawful order. It would not be surprising if Trump and Congress aren't trying to tempt DOJ to refuse to comply as pretext for Trump to fire Rosentstein.", "score": 80, "polarity": 0.25, "word_count": 50}]}, "cringe": {"0": [{"author": "OvercoatTurntable", "body": "How is it stupid? If he's talked to them, then he should say yes. If he hasn't, then he should say no. Really fucking frustrating to see grown adults play stupid like \"oh yeah like this guy knows everyone in town! get real!\". This is literally the firm representing the POTUS. I would really hope, considering the legal hell Trump has been in, that Kavanaugh would at least know of these people. No need to squirm in your chair like a maggot unless you're trying to dance around something you don't want to say out loud.", "score": 80, "polarity": -0.15, "word_count": 100}, {"author": "jennyheff2", "body": "Yea. As if pedophilia wasn't enough- why the fuck does this guy need a \"tag along\" with a 12 year old girl? So in case she changes her mind- hes got an extra dude to pin her down? Or he there to watch? And his friends attitude like \"oh none of it was me, just here as a tag along\" just makes me want to slap the shit out of him. No, asshole, youre a pedophile too. It doesn't matter if you watch, assist, or just fucking look out- youre just as much as fucking scum bag. And i just dont know how Chris Hanson (name?) Can maintain professionalism with out beating the fuck out of them. I don't care if i get arrested- of you act or even try to act on a desire to fuck a pre-pubescent child- then youre getting your fucking face kicked in. If i knew they were actually going to get punished (by law enforcement) i might be able to let the justice system take care of it- but given the circumstances they would probably do nothing....which would just make me more pissed off and motivated to hit them harder. I might have fucking killed the guy.", "score": 20, "polarity": -0.14, "word_count": 208}, {"author": "psomaster226", "body": "Maybe I'm crazy, but it seems like he believed he needed to specifically invoke his Constitutional rights so that they would apply to him.  As if they don't apply by default.  People like him seem to believe that having Constitutional rights makes him immune to the effects of police.  If the officer didn't let him off with a warning, there would have likely been a long argument.\n\nEDIT: After watching their follow-up video, that's exactly what they thought.  They believe the Constitution doesn't apply unless you specifically say so, and once you do that, the Constitution protects them from police doing anything they perceive as bad.", "score": 15, "polarity": -0.22, "word_count": 112}, {"author": "remodex", "body": "Let me offer you some insight.  \n \nColbert was completely cold towards him the whole time. He was deliberately trying to shit on Bill Burr and it's completely obvious. You can even see Burr baffled as he didn't do any lead up to the bits.  \n \n\"Is there anything that makes you angry?\" \n \nYou can see they of course discussed the bits before and Colbert should have done a lead up to him flying there or something. Anything. But no.  \n \nBurr is almost teary eyed at the betrayal. Look at Colbert's face as Burr walks into his seat. Just look at it.  \n \nThe editing was very awkward and it's very clear that Colbert himself was sitting in on the editing telling the editor to cut off at any of the hype. Always cut early  into Colbert being completely deadpan at everything Burr said and making it deliberately awkward. Spending way too much time on Colbert's disapproving very concerned face like he was Tucker Carlson or something all of a sudden.     \n \nThere was no back and forth it was very rushed.  \n \nEverything Burr said, Colbert just shat on and didn't want to play along at all. He knows exactly what he was doing from the shitty primer introduction,  even down to the goddamn mug.  \n \nFinal straw was the rushing into the clip which he had absolutely nothing positive to say about and trying to just guilt Burr into admitting  how much of a shithead he is how horrible it is that he depicts his childhood that way.  \n \nBill would probably be the first one to admit that he had a shit childhood, but he is playing with the hand that he was dealt and Colbert was having none of that for some reason. He clearly had it out for Burr the whole time.  \n \nI know reddit has a boner for Colbert and think he is hilarious, but I think he has just become a bitter old crank and full of himself. He can't stand somebody the likes of Bill who doesn't just go on and on about Trump and all that bullshit.  \n \nI think Colbert was trying his best to be a dick to Burr the whole time on purpose and it shows.  He probably thinks that Burr  goes against everything that his yuppiehippie crowd adores about his new pandering smarmy shtick. I really don't like the new Colbert at all for full disclosure, but this is the worst I've seen of him and I think it's because Burr didn't want to talk about the things Colbert wanted to talk about and promote his feelgood pussyhat style populist garbage.   \n \nYou can even see it on Bill's face like \"what did I do to deserve this? Why are you going after me like this wtf?\"\n \n\n \nJust my 2c and you can check my comment history before accusing me of being a Russian troll or a Trump sympathiser or anything like that.", "score": 103, "polarity": -0.02, "word_count": 500}, {"author": "brooksfosho", "body": "Np! \n\nDefinitely, and it's absolutely something worth commending.  Perhaps I'm being a bit harsh on the paraphrasing as I'm not particularly a fan of Cruz, but I think simply saying, \"I respect that he's passionate about his work and beliefs\" without adding, \"...but I don't think they work\" 2-3 times would have garnered significantly less criticism, if any at all.  Then again, I'm sure it wasn't by accident as he's a smart guy.", "score": 3, "polarity": 0.07, "word_count": 82}, {"author": "Krisapocus", "body": "They have bbq pits nice tents right next to the food bank.  The problem is the apt complex right there on navigation.  It\u2019s a drug haven.  They run a \u201ccar wash\u201d at the gas station where people come to wash their car but it\u2019s really just a few guys with a bucket of water selling drugs.  People feel sorry for them so they\u2019ll bring them stuff but they don\u2019t realize these aren\u2019t typical homeless they\u2019re  mostly drug addicts.  ABC news went to report and got a gun pulled on them and told to shut off the cameras", "score": 1, "polarity": 0.12, "word_count": 103}, {"author": "TyrionMannister", "body": "You're reducing the analogy way too much though. It's the President's personal lawyer's firm, and it's a federal investigation into the President of the United States which that lawyer is involved in.\n\nTo logically extend the analogy, it's more like asking if he's ever spoken to someone with a peanut allergy about the uses of peanut butter. If you discuss the uses of peanut butter with that person, it is not absurd to suggest that that particular topic came up *because* of that person's history of peanut allergies. If it came up organically, somehow, and you came away unaware of that person's allergies, the only explanation would be that that person was being intentionally deceptive.\n\nI'm sure Brett Kavanaugh has plenty of things to talk about. He also seems to be a very perceptive and reasonably intelligent man. If he discussed the investigation with a member of the President's law firm, he likely knew exactly what he was doing, or it would have come up in the course of the conversation unless said member was intentionally obscuring their affiliation. If the latter was the case, he would likely have said \"not that I am aware of\" or something to that effect, rather than fishing for names, which makes it seem like he's trying to see if she knows about a particular conversation or not.", "score": 3, "polarity": 0.16, "word_count": 236}, {"author": "i_getitin", "body": "Irrational guess. You need to calm yourself because sympathizing with pedophiles is quite a reach. My point was 1) There is an entire criminal and legal process that deals with pedophiles. \n\n2) Allow me to correct myself. Tough girl* I\u2019m sure you are capable of giving these men quite an ass kicking- they would def regret messing with you. Reminds me\nOf that meme of some old white American woman threatening ISIS over Facebook lmao", "score": 19, "polarity": 0.1, "word_count": 76}, {"author": "remodex", "body": "Let me offer you some insight.  \n \nColbert was completely cold towards him the whole time. He was deliberately trying to shit on Bill Burr and it's completely obvious. You can even see Burr baffled as he didn't do any lead up to the bits.  \n \n\"Is there anything that makes you angry?\" \n \nYou can see they of course discussed the bits before and Colbert should have done a lead up to him flying there or something. Anything. But no.  \n \nBurr is almost teary eyed at the betrayal. Look at Colbert's face as Burr walks into his seat. Just look at it.  \n \nThe editing was very awkward and it's very clear that Colbert himself was sitting in on the editing telling the editor to cut off at any of the hype. Always cut early  into Colbert being completely deadpan at everything Burr said and making it deliberately awkward. Spending way too much time on Colbert's disapproving very concerned face like he was Tucker Carlson or something all of a sudden.     \n \nThere was no back and forth it was very rushed.  \n \nEverything Burr said, Colbert just shat on and didn't want to play along at all. He knows exactly what he was doing from the shitty primer introduction,  even down to the goddamn mug.  \n \nFinal straw was the rushing into the clip which he had absolutely nothing positive to say about and trying to just guilt Burr into admitting  how much of a shithead he is how horrible it is that he depicts his childhood that way.  \n \nBill would probably be the first one to admit that he had a shit childhood, but he is playing with the hand that he was dealt and Colbert was having none of that for some reason. He clearly had it out for Burr the whole time.  \n \nI know reddit has a boner for Colbert and think he is hilarious, but I think he has just become a bitter old crank and full of himself. He can't stand somebody the likes of Bill who doesn't just go on and on about Trump and all that bullshit.  \n \nI think Colbert was trying his best to be a dick to Burr the whole time on purpose and it shows.  He probably thinks that Burr  goes against everything that his yuppiehippie crowd adores about his new pandering smarmy shtick. I really don't like the new Colbert at all for full disclosure, but this is the worst I've seen of him and I think it's because Burr didn't want to talk about the things Colbert wanted to talk about and promote his feelgood pussyhat style populist garbage.   \n \nYou can even see it on Bill's face like \"what did I do to deserve this? Why are you going after me like this wtf?\"\n \n\n \nJust my 2c and you can check my comment history before accusing me of being a Russian troll or a Trump sympathiser or anything like that.", "score": 103, "polarity": -0.02, "word_count": 500}, {"author": "remodex", "body": "Let me offer you some insight.  \n \nColbert was completely cold towards him the whole time. He was deliberately trying to shit on Bill Burr and it's completely obvious. You can even see Burr baffled as he didn't do any lead up to the bits.  \n \n\"Is there anything that makes you angry?\" \n \nYou can see they of course discussed the bits before and Colbert should have done a lead up to him flying there or something. Anything. But no.  \n \nBurr is almost teary eyed at the betrayal. Look at Colbert's face as Burr walks into his seat. Just look at it.  \n \nThe editing was very awkward and it's very clear that Colbert himself was sitting in on the editing telling the editor to cut off at any of the hype. Always cut early  into Colbert being completely deadpan at everything Burr said and making it deliberately awkward. Spending way too much time on Colbert's disapproving very concerned face like he was Tucker Carlson or something all of a sudden.     \n \nThere was no back and forth it was very rushed.  \n \nEverything Burr said, Colbert just shat on and didn't want to play along at all. He knows exactly what he was doing from the shitty primer introduction,  even down to the goddamn mug.  \n \nFinal straw was the rushing into the clip which he had absolutely nothing positive to say about and trying to just guilt Burr into admitting  how much of a shithead he is how horrible it is that he depicts his childhood that way.  \n \nBill would probably be the first one to admit that he had a shit childhood, but he is playing with the hand that he was dealt and Colbert was having none of that for some reason. He clearly had it out for Burr the whole time.  \n \nI know reddit has a boner for Colbert and think he is hilarious, but I think he has just become a bitter old crank and full of himself. He can't stand somebody the likes of Bill who doesn't just go on and on about Trump and all that bullshit.  \n \nI think Colbert was trying his best to be a dick to Burr the whole time on purpose and it shows.  He probably thinks that Burr  goes against everything that his yuppiehippie crowd adores about his new pandering smarmy shtick. I really don't like the new Colbert at all for full disclosure, but this is the worst I've seen of him and I think it's because Burr didn't want to talk about the things Colbert wanted to talk about and promote his feelgood pussyhat style populist garbage.   \n \nYou can even see it on Bill's face like \"what did I do to deserve this? Why are you going after me like this wtf?\"\n \n\n \nJust my 2c and you can check my comment history before accusing me of being a Russian troll or a Trump sympathiser or anything like that.", "score": 103, "polarity": -0.02, "word_count": 500}, {"author": "jennyheff2", "body": "'The solution is not to \"murder\" to pedophiles?' Do we also \"murder\" other criminals when we give them the death penalty? They absolutely should be killed but thats still not enough.\n\nSo because im a parent im not able to think logically about laws and punishments for crimes? I guess we should be removing the vast majority of judges, congress, and even presidents.\n\nFace it. The modern day \"civilised\"  system does not provide any punishment suitable for heinous crimes. And if your only argument against that is personal attacks or just suggesting \"i dont know what im talking about\" then you have a very weak argument, my friend. \n\nI also suggest you not have any kids yourself- your level of pedo sympathizing in very alarming.", "score": 0, "polarity": 0.0, "word_count": 125}, {"author": "I_ama_Borat", "body": "Nobody gives a shit? You don\u2019t follow the soundcloud scene so that means nobody gives a shit. There is a lot of people that care. Wont lie, this guy sounds like almost every other sound cloud rapper trying to make it, except he has more of a following cuz of his character and was willing to get face tattoos like a dummy. That attracts the kids these days lol. Xxxtentacion, lil peep, 6ix9ine, lil pump, lil xan are the guys that \u201cmade it\u201d, breaking out of SoundCloud, which is what all these guys hope to do eventually. Kid buu is prob the next guy to breakaway but he\u2019s far behind in following.", "score": 18, "polarity": 0.09, "word_count": 114}, {"author": "jennyheff2", "body": "Yea. As if pedophilia wasn't enough- why the fuck does this guy need a \"tag along\" with a 12 year old girl? So in case she changes her mind- hes got an extra dude to pin her down? Or he there to watch? And his friends attitude like \"oh none of it was me, just here as a tag along\" just makes me want to slap the shit out of him. No, asshole, youre a pedophile too. It doesn't matter if you watch, assist, or just fucking look out- youre just as much as fucking scum bag. And i just dont know how Chris Hanson (name?) Can maintain professionalism with out beating the fuck out of them. I don't care if i get arrested- of you act or even try to act on a desire to fuck a pre-pubescent child- then youre getting your fucking face kicked in. If i knew they were actually going to get punished (by law enforcement) i might be able to let the justice system take care of it- but given the circumstances they would probably do nothing....which would just make me more pissed off and motivated to hit them harder. I might have fucking killed the guy.", "score": 20, "polarity": -0.14, "word_count": 208}, {"author": "jennyheff2", "body": "Yea. As if pedophilia wasn't enough- why the fuck does this guy need a \"tag along\" with a 12 year old girl? So in case she changes her mind- hes got an extra dude to pin her down? Or he there to watch? And his friends attitude like \"oh none of it was me, just here as a tag along\" just makes me want to slap the shit out of him. No, asshole, youre a pedophile too. It doesn't matter if you watch, assist, or just fucking look out- youre just as much as fucking scum bag. And i just dont know how Chris Hanson (name?) Can maintain professionalism with out beating the fuck out of them. I don't care if i get arrested- of you act or even try to act on a desire to fuck a pre-pubescent child- then youre getting your fucking face kicked in. If i knew they were actually going to get punished (by law enforcement) i might be able to let the justice system take care of it- but given the circumstances they would probably do nothing....which would just make me more pissed off and motivated to hit them harder. I might have fucking killed the guy.", "score": 20, "polarity": -0.14, "word_count": 208}, {"author": "i_getitin", "body": "Absolutely not. Pedos who are found guilty deserve to face the justice system the same way any other criminal would. \n\nWe frown upon other countries that deal with their criminals in the manner that you suggest. We aim to be civilized and rational as a progressive society. Just because you have a child or have a personal connection to the crime, it doesn\u2019t mean we resort to barbaric practices of justice. \n\nThe kid in the video gets arrested as soon as he steps out of the house, just like all the others who got caught in this sting.", "score": 8, "polarity": -0.13, "word_count": 99}], "1": [{"author": "madm4x", "body": "This is how I imagine an \"influencer\" awards night would go... tits n all", "score": 500, "polarity": 0.0, "word_count": 14}, {"author": "BillRothstein", "body": "That was his first line!", "score": 7, "polarity": 0.31, "word_count": 5}, {"author": "FuCuck", "body": "What, you don\u2019t do that?", "score": 1, "polarity": 0.0, "word_count": 6}, {"author": "midnight_metro", "body": "Ah, I thought it was just the passenger. My mistake.", "score": 3, "polarity": 0.0, "word_count": 10}, {"author": "Sajius460", "body": "your replies on this thread are the cringe! xD", "score": 0, "polarity": 0.0, "word_count": 9}, {"author": "jrobinson3k1", "body": "Ah fuck, what did I just invoke with 42USC1983?", "score": 21, "polarity": -0.4, "word_count": 9}, {"author": "joblessandlooking96", "body": "Ah I thought you meant like you got harassed for it or something, my b", "score": 1, "polarity": 0.0, "word_count": 15}, {"author": "Sajius460", "body": "zinger bro! who would have known it would take one comment to get your political affiliation out of you? xD", "score": 0, "polarity": 0.0, "word_count": 20}, {"author": "0-_1_-0", "body": "I agree.", "score": 3, "polarity": 0.0, "word_count": 2}, {"author": "CaptPussPuss", "body": "We call them ass gaskets where I come from.", "score": 9, "polarity": 0.0, "word_count": 9}, {"author": "mchurry", "body": "When you say \"Do your research folks!\", are you talking to us in this thread or people who plan to kill themselves?", "score": 39, "polarity": 0.0, "word_count": 22}, {"author": "LOWERCASEcaps", "body": "Anyone know the backstory to this? Like, what happened to that poor young lady?", "score": 44, "polarity": -0.15, "word_count": 14}, {"author": "dnadv", "body": "How? The dude was just an edge lord.", "score": 18, "polarity": 0.0, "word_count": 8}, {"author": "mrsloblaw", "body": "I can appreciate that. Stay cooool.", "score": 1, "polarity": 0.0, "word_count": 6}, {"author": "Prince_Polaris", "body": "It hurts", "score": 7, "polarity": 0.0, "word_count": 2}], "2": [{"author": "fvrthebrave", "body": "Your personality is cringe honestly.", "score": 13, "polarity": 0.6, "word_count": 5}, {"author": "outer_fucking_space", "body": "I feel like the cringe is on her. You better shake someones hand if they helped fix your car!", "score": 487, "polarity": 0.62, "word_count": 19}, {"author": "jennyheff2", "body": "Yes, because going against a 20 year old boy is exactly like going after ISIS. At least your laughing at your own jokes tho!", "score": 6, "polarity": 0.2, "word_count": 24}, {"author": "illegaleggpoacher", "body": "Lol someone cant take a joke.", "score": 9, "polarity": 0.8, "word_count": 6}, {"author": "neurorgasm", "body": "*Bends over, spreads ass cheeks, holding a pot*\n\nYes I just want to thank all the pottery fans out there for supporting me, I love you terracotta nation", "score": 185, "polarity": 0.38, "word_count": 28}, {"author": "icebrotha", "body": "This was extremely unexpected, I would have never expected a HxH reference here.  My favorite anime ever.", "score": 2, "polarity": 0.22, "word_count": 17}, {"author": "analogWeapon", "body": "&gt; who's very intelligent\n\nNot about certain things, obviously.", "score": 5, "polarity": 0.4, "word_count": 10}, {"author": "romanagr", "body": "\ud83e\udd1d \"Good work\"", "score": 11, "polarity": 0.7, "word_count": 2}, {"author": "LordMAGA", "body": "I love rich elitists who shit on the world for profit!", "score": 20, "polarity": 0.21, "word_count": 11}, {"author": "200_percent", "body": "I think so. I\u2019ve tried peeing on it without ripping the hole and it was really weird lol. They make ones pre ripped and those are the best.", "score": 2, "polarity": 0.43, "word_count": 29}, {"author": "Persona96", "body": "...Not gonna lie. That's good advice.", "score": 19, "polarity": 0.7, "word_count": 7}, {"author": "SickofInternetProgs", "body": "It's true and if you aren't ashamed of it, it shouldn't be a problem.", "score": -3, "polarity": 0.35, "word_count": 17}, {"author": "Gentle_Mane", "body": "They injected the sound of a roaring crowd. Lmao.", "score": 376, "polarity": 0.5, "word_count": 9}, {"author": "Gentle_Mane", "body": "They injected the sound of a roaring crowd. Lmao.", "score": 376, "polarity": 0.5, "word_count": 9}, {"author": "dhoover2112", "body": "Lol", "score": 3, "polarity": 0.8, "word_count": 1}], "3": [{"author": "amplified_cactus", "body": "I don't get it. How is that a dig? It seems to me like a nice thing to say.\n\nI should note that in general I'm not very good at picking up on backhanded compliments.", "score": 33, "polarity": 0.13, "word_count": 37}, {"author": "whatisnotlife1234", "body": "Hate when that happens", "score": 11, "polarity": -0.8, "word_count": 4}, {"author": "Jackthere", "body": "Nailed it. And Colbert is sufficiently cold to Burr. As the host, he can throw his guests lifelines and or laugh and Colbert would rather sit there smug. Burr is hilarious. Watch his latest interview with Conan and see how awesome Conan and the crowd are with him.", "score": 82, "polarity": 0.34, "word_count": 48}, {"author": "polymute", "body": "itjustaprankbro.m4a\n\n(Sarcasm works because of speech inflections mostly, so don't be surprised if it isn't detected in simple text communications.)", "score": 3, "polarity": 0.05, "word_count": 23}, {"author": "havebeenfloated", "body": "I don\u2019t know, I don\u2019t watch his new show much. Going back to his sketch comedy days all the way through to the Report, he was hilarious. It must be the wrong context for him.", "score": 0, "polarity": 0.07, "word_count": 37}, {"author": "Marwood29", "body": "Colbert doesn't have the balls. He's a liberal mouth piece and nothing else.(I'm a liberal by the way , before you nutcases jump down my throat) but fuck colbert", "score": 69, "polarity": -0.28, "word_count": 32}, {"author": "LordMAGA", "body": "its a joke. y'all really can't detect sarcasm.", "score": 5, "polarity": 0.2, "word_count": 10}, {"author": "200_percent", "body": "In some bathrooms there is a container attached to the wall above the toilet with a stack of seat covers in it. They\u2019re thin paper sheets shaped like a toilet seat. You pull one out and place it on the seat before sitting on the toilet. It avoids you getting germs on your butt cheeks. \n\nSo OP was walking around with a piece of paper shaped like a toilet seat sticking out of his pants so everyone knew he just took a shit lol.", "score": 31, "polarity": 0.01, "word_count": 85}, {"author": "i_getitin", "body": "That\u2019s not how the law works. Let me guess, you are a father and therefore you feel like the rule of law doesn\u2019t apply just because you can\u2019t relate to this incident? \n\nCalm down, tough guy.", "score": 17, "polarity": -0.08, "word_count": 39}, {"author": "bigmoist-ChrisHansen", "body": "I mean I'm not into that stuff but honestly dude once I got to college you pretty much just say fuck it about everything. I'm in my junior year now and I've had a girlfriend for 4 years and an xbox for like 9 so fuck everything or anyone else, who cares about any of these other random bums lol", "score": 7, "polarity": 0.01, "word_count": 63}, {"author": "Jul_the_Demon", "body": "I will be waiting for you down here. ;)", "score": 3, "polarity": 0.05, "word_count": 8}, {"author": "acryon", "body": "https://biblehub.com/matthew/25-46.htm\n\n\nThe only part of that verse which is arguably translated incorrectly is \"everlasting\" when it should be \"eternal\".  The rest is clearly speaking of a place or state of eternal punishment.  \n\n\nWas there something else you are talking about or some reference that led you to believe your comment?", "score": 2, "polarity": 0.05, "word_count": 56}, {"author": "Yungveezy", "body": "The real cringe is this comment", "score": 9, "polarity": 0.2, "word_count": 6}, {"author": "Describe", "body": "Feels like a never ending Le Wrong Generation post. Life is so much better when you can dislike something without making sure everyone knows how much you dislike it.", "score": 7, "polarity": 0.17, "word_count": 29}, {"author": "7744666", "body": "Come on man, it was very clear and simple: all constitutional rights invoked non-waived.  They were under the federal jurisdiction of the federal local government in the federal 42USC1983 so they're not under the jurisdiction of the state or the local law.  \n  \n...  \n  \nLOL", "score": 56, "polarity": 0.19, "word_count": 45}]}, "overall_corpus": {"0": [{"author": "UrAGoodPerson", "body": "I live in the bay and I agree the housing situation here is absurd. I love california, and plan to get a huge California tattoo (lol) but I agree housing costs here are unethical and should be dealt with by the law. We need rent control. It should be illegal to pay rent in California to foreign companies. After 2008, we were colonized. I'm being succinct, not dramatic here. Thousands and thousands of people work everyday to pay more than half their salary to enrich China. I don't have beef with Chinese people but that situation is not ok. My work should enrich my local economy more than some CEO across an ocean.", "score": 32, "polarity": 0.09, "word_count": 115}, {"author": "howhardcoulditB", "body": "Deuteronomy 22:23-24 New International Version (NIV)\n\n23 If a man happens to meet in a town a virgin pledged to be married and he sleeps with her, 24 you shall take both of them to the gate of that town and stone them to death\u2014the young woman because she was in a town and did not scream for help, and the man because he violated another man\u2019s wife.\n\nDeuteronomy 22:28-29 New International Version (NIV)\n\n28 If a man happens to meet a virgin who is not pledged to be married and rapes her and they are discovered, 29 he shall pay her father fifty shekels[a] of silver. He must marry the young woman, for he has violated her. He can never divorce her as long as he lives.", "score": 10, "polarity": 0.1, "word_count": 135}, {"author": "biffordmalibu", "body": "Beto can use Avenatti as a foil if he's savvy. Cruz is embracing Trump after he denigrated his father, his wife and his family. Foil's are incredibly useful to be \"above the fray\" and I think Beto can capitalize on that.\n\nAs far as Avenatti, so far he's the only person to tease a run in 2020 that Trump is too afraid to respond to. That says something to me - Trump is a bully and I think he knows that he'll lose if he engages Avenatti, which is very interesting.\n\nI don't necessarily think Avenatti is qualified for President, but holy crap Trump has removed all the norms. I would hope that he would instead be an attack dog for a qualified politician or even a VP slot candidate to verbally bitch slap Trump.", "score": 14, "polarity": -0.03, "word_count": 139}, {"author": "meta_irl", "body": "I just replied to the post above yours, but I think my reply fits well with what you're saying and you might appreciate it.\n\n&gt;I like Michael as a gadfly, but I'm less enthusiastic about him as someone running for office. Did he coordinate this with Beto's campaign? I have a feeling he didn't, and my assumption is that Beto wouldn't want him to do this.\n\n&gt;In order for Beto to win, he'll need to convince a fair number of Republican-leaning voters to go with him. There's a reason he's polling so much better than Greg Abbot's challenger. Something like this just plays up the tribal partisanship of the race. It feels less like this is a strategic play and more like this an attention whore move by Avenatti in preparation of a presidential run (he's already making stops in Iowa).", "score": 2, "polarity": 0.35, "word_count": 154}, {"author": "mvea", "body": "The title of the post is a copy and paste from the title, subtitle and second paragraph of the linked popular press article here :\n\n&gt; Man paralysed from waist down makes history by walking again using mind-controlled implant to power his legs\n\n\n&gt; \u2018The reason why this is important is because the patient's own mind, thought, was able to drive movement in his legs,' scientist says\n\n\n&gt; Doctors in the US state of Minnesota implanted a remote-controlled electrode in his back to stimulate surviving nerves in the patient\u2019s spinal cord.\n\n\nJournal Reference:\n\nMegan L. Gill, Peter J. Grahn, Jonathan S. Calvert, Margaux B. Linde, Igor A. Lavrov, Jeffrey A. Strommen, Lisa A. Beck, Dimitry G. Sayenko, Meegan G. Van Straaten, Dina I. Drubach, Daniel D. Veith, Andrew R. Thoreson, Cesar Lopez, Yury P. Gerasimenko, V. Reggie Edgerton, Kendall H. Lee, Kristin D. Zhao. \n\nNeuromodulation of lumbosacral spinal networks enables independent stepping after complete paraplegia. \n\nNature Medicine, 2018; \n\nDOI: 10.1038/s41591-018-0175-7\n\nLink: https://www.nature.com/articles/s41591-018-0175-7\n\nAbstract:\n\nSpinal sensorimotor networks that are functionally disconnected from the brain because of spinal cord injury (SCI) can be facilitated via epidural electrical stimulation (EES) to restore robust, coordinated motor activity in humans with paralysis1,2,3. Previously, we reported a clinical case of complete sensorimotor paralysis of the lower extremities in which EES restored the ability to stand and the ability to control step-like activity while side-lying or suspended vertically in a body-weight support system (BWS)4. Since then, dynamic task-specific training in the presence of EES, termed multimodal rehabilitation (MMR), was performed for 43 weeks and resulted in bilateral stepping on a treadmill, independent from trainer assistance or BWS. Additionally, MMR enabled independent stepping over ground while using a front-wheeled walker with trainer assistance at the hips to maintain balance. Furthermore, MMR engaged sensorimotor networks to achieve dynamic performance of standing and stepping. To our knowledge, this is the first report of independent stepping enabled by task-specific training in the presence of EES by a human with complete loss of lower extremity sensorimotor function due to SCI.", "score": 1675, "polarity": 0.11, "word_count": 363}, {"author": "leeringHobbit", "body": "I thought there was no statute of limitations for sex crimes in MD but there's no corroborating evidence for a prosecutor to indict. It would devolve into a he-said, she-said much like this hearing with the difference that there would be a higher burden of proof on the State's part in a criminal investigation. But since this is a job interview for a position which would have enormous consequences for the medical lives of women in this country, it ought to be disqualifying if Senators were concerned about the SC appearing to be neutral on the abortion issue.", "score": 2, "polarity": 0.01, "word_count": 102}, {"author": "GlitteringComplaint", "body": "&gt;I do not give a shit about /r/PoliticalHumor\n\nWhich is *totally* why you're doing the exact same thing they are?\n\n&gt;But I am getting tired of people acting like they have some sort of monopoly of visual political content and attacking this thread with inane conspiracy theories.\n\nConservatives generally do get tired of people calling them out on their bullshit, so I'm not surprised.  It's also *not* a conspiracy theory, as this sub does things like make new rules when it starts impacting conservatives, and ignoring threats against liberals.", "score": -26, "polarity": -0.05, "word_count": 95}, {"author": "mclumber1", "body": "It might even be difficult to do so at Tesla, because of things like liability and insurance.  I'm afraid that most companies will continue to enforce current marijuana restrictions until a reliable method is developed to determine if they are currently high.\n\nThe problem with current testing methods is that it only tells you if you have used marijuana in the last few weeks, not necessarily if you are high right now.  For an assembly line worker, or any other job, it is important you are not under the influence of drugs or alcohol, as you are working around machinery that could easily mangle or kill you if you lose your concentration.", "score": 8, "polarity": 0.04, "word_count": 113}, {"author": "mvea", "body": "The title of the post is a copy and paste from the title, subtitle and second paragraph of the linked popular press article here :\n\n&gt; Man paralysed from waist down makes history by walking again using mind-controlled implant to power his legs\n\n\n&gt; \u2018The reason why this is important is because the patient's own mind, thought, was able to drive movement in his legs,' scientist says\n\n\n&gt; Doctors in the US state of Minnesota implanted a remote-controlled electrode in his back to stimulate surviving nerves in the patient\u2019s spinal cord.\n\n\nJournal Reference:\n\nMegan L. Gill, Peter J. Grahn, Jonathan S. Calvert, Margaux B. Linde, Igor A. Lavrov, Jeffrey A. Strommen, Lisa A. Beck, Dimitry G. Sayenko, Meegan G. Van Straaten, Dina I. Drubach, Daniel D. Veith, Andrew R. Thoreson, Cesar Lopez, Yury P. Gerasimenko, V. Reggie Edgerton, Kendall H. Lee, Kristin D. Zhao. \n\nNeuromodulation of lumbosacral spinal networks enables independent stepping after complete paraplegia. \n\nNature Medicine, 2018; \n\nDOI: 10.1038/s41591-018-0175-7\n\nLink: https://www.nature.com/articles/s41591-018-0175-7\n\nAbstract:\n\nSpinal sensorimotor networks that are functionally disconnected from the brain because of spinal cord injury (SCI) can be facilitated via epidural electrical stimulation (EES) to restore robust, coordinated motor activity in humans with paralysis1,2,3. Previously, we reported a clinical case of complete sensorimotor paralysis of the lower extremities in which EES restored the ability to stand and the ability to control step-like activity while side-lying or suspended vertically in a body-weight support system (BWS)4. Since then, dynamic task-specific training in the presence of EES, termed multimodal rehabilitation (MMR), was performed for 43 weeks and resulted in bilateral stepping on a treadmill, independent from trainer assistance or BWS. Additionally, MMR enabled independent stepping over ground while using a front-wheeled walker with trainer assistance at the hips to maintain balance. Furthermore, MMR engaged sensorimotor networks to achieve dynamic performance of standing and stepping. To our knowledge, this is the first report of independent stepping enabled by task-specific training in the presence of EES by a human with complete loss of lower extremity sensorimotor function due to SCI.", "score": 1675, "polarity": 0.11, "word_count": 363}, {"author": "franciscoferrante", "body": "&gt; xcept it is. Federal code allows for declaration at a port of entry OR in person to a federal agent.  \n\n\" **(1)In general**\n\nAny [alien](https://www.law.cornell.edu/definitions/uscode.php?width=840&amp;height=800&amp;iframe=true&amp;def_id=8-USC-92903111-1485256781&amp;term_occur=380&amp;term_src=title:8:chapter:12:subchapter:II:part:I:section:1158) who is physically present in the [United States](https://www.law.cornell.edu/definitions/uscode.php?width=840&amp;height=800&amp;iframe=true&amp;def_id=8-USC-2032517217-1201680101&amp;term_occur=313&amp;term_src=title:8:chapter:12:subchapter:II:part:I:section:1158) or who arrives in the [United States](https://www.law.cornell.edu/definitions/uscode.php?width=840&amp;height=800&amp;iframe=true&amp;def_id=8-USC-2032517217-1201680101&amp;term_occur=314&amp;term_src=title:8:chapter:12:subchapter:II:part:I:section:1158) (whether or not at a designated port of arrival and including an alien who is brought to the [United States](https://www.law.cornell.edu/definitions/uscode.php?width=840&amp;height=800&amp;iframe=true&amp;def_id=8-USC-2032517217-1201680101&amp;term_occur=315&amp;term_src=title:8:chapter:12:subchapter:II:part:I:section:1158) after having been interdicted in international or [United States](https://www.law.cornell.edu/definitions/uscode.php?width=840&amp;height=800&amp;iframe=true&amp;def_id=8-USC-2032517217-1201680101&amp;term_occur=316&amp;term_src=title:8:chapter:12:subchapter:II:part:I:section:1158) waters), irrespective of such alien\u2019s status, may apply for asylum in accordance with this section or, where applicable, [section 1225(b) of this title](https://www.law.cornell.edu/uscode/text/8/1225#b)\"\n\n\" **(B)Time limit**\n\nSubject to subparagraph (D), paragraph (1) shall not apply to an [alien](https://www.law.cornell.edu/definitions/uscode.php?width=840&amp;height=800&amp;iframe=true&amp;def_id=8-USC-92903111-1485256781&amp;term_occur=382&amp;term_src=title:8:chapter:12:subchapter:II:part:I:section:1158) unless the [alien](https://www.law.cornell.edu/definitions/uscode.php?width=840&amp;height=800&amp;iframe=true&amp;def_id=8-USC-92903111-1485256781&amp;term_occur=383&amp;term_src=title:8:chapter:12:subchapter:II:part:I:section:1158) demonstrates by clear and convincing evidence that the application has been filed within 1 year after the date of the [alien](https://www.law.cornell.edu/definitions/uscode.php?width=840&amp;height=800&amp;iframe=true&amp;def_id=8-USC-92903111-1485256781&amp;term_occur=384&amp;term_src=title:8:chapter:12:subchapter:II:part:I:section:1158)\u2019s arrival in the [United States](https://www.law.cornell.edu/definitions/uscode.php?width=840&amp;height=800&amp;iframe=true&amp;def_id=8-USC-2032517217-1201680101&amp;term_occur=317&amp;term_src=title:8:chapter:12:subchapter:II:part:I:section:1158)\"\n\nYou didn't even read what you sent me lmao\n\n&gt; Those who have declared at ports of entry are routinely denied entry (which is illegal) and even when they are accepted, they still face family separation and indefinite detention.  \n\nDo you have evidence of this being a pattern?\n\n&gt; [You'd be mistaken](https://www.migrationpolicy.org/programs/data-hub/charts/refugee-and-asylum-seeker-populations-country-origin-and-destination). Those countries have tiny populations and still produce refugees. \n\nAh yeah, the tiny population of 44 million argentinians. Of those 44 million, 214 refugees, which is practically nothing. Now compare that to 70 thousand mexicans.\n\n&gt; You don't know what the conditions are like, and neither do I \n\nYou need to provide evidence that they are inadequate, not me that they aren't.\n\n&gt; If they were up to standards, they would gladly allow someone to see. They won't even allow senators access. \n\nYou mean they won't let adults go into detention centres full of kids? Disgraceful!! ^(/s)\n\n&gt; The courts have ruled the practice illegal. If you actually care about the rule of law, why are you not outraged by this? \n\nAlready explained this to you\n\n&gt; Man you're exhausting. You need to research the stuff you're stating as fact. [There IS forced labor in ICE camps](https://www.theguardian.com/commentisfree/2018/may/17/us-private-prisons-forced-labour-detainees-modern-slavery). \n\n\" Stewart is operated by the largest prison corporation in the US, CoreCivic (formerly Corrections Corporation of America), under a contract with Immigration and Customs Enforcement (Ice) \"\n\nDo you even read what you link?\n\n&amp;#x200B;", "score": 8, "polarity": 0.0, "word_count": 758}, {"author": "JohnnyOnslaught", "body": "Alright, so first off; a couple of decades isn't much when we're talking about the formation of governments. If all the people who were capable of running a properly democratic country were purged back then, where are the new people supposed to come from? You need 18 years just for a kid to become an adult, that adult then needs access to the kind of education that will allow them to learn the things they need to know to become part of a functioning government.\n\nSecondly, El Salvador and Honduras are in disarray because of MS-13, which was created on the streets of LA after refugees from the civil war found themselves crammed into the worst areas of America, caught between violent American gangs (during the worst periods of gang trouble in the US) and thrown into American prisons. Then, after giving all of these former refugees crash courses in \"how to do crime American style\", the US ships them all back to El Salvador, which was horrendously unprepared to deal with organized crime on that level (because they're still recovering from American meddling and a massive civil war). It shouldn't be any surprise that those gang members would overrun those areas. And *that* has happened over the last ten-fifteen years, so in a way, yes, the US has manipulated Honduras and El Salvador in decades.", "score": 16, "polarity": -0.06, "word_count": 232}, {"author": "duckhunttoptier", "body": "now i am really critical of the US's stance on environmental policies, healthcare, and so on. But you can't just say we're complete garbage...\n\nWe're the world's center when it comes to military strength and more importantly, economics. We have an incredibly high GDP and many countries aspire to have a GDP like ours, as a high GDP means so much more for our country.\n\nDoes our capitalist system also lead to crazy poverty levels, a huge wealth inequality, and a failure to lead the world to an eco-friendly planet? yes, and those problems should be fixed... but we can't discredit what we've done so far.", "score": 1, "polarity": 0.12, "word_count": 114}, {"author": "miloemonkeyrod", "body": "So there is no difference at all between the experiences of a female and the experiences of a male? That seems dubious. Of course there are going to be certain things about raising a child that is subject to a completely different set of societal expectations and bilogical developments than the father, that are confusing and new. Raising a boy, a father has experienced first hand the stages of development and many of the cultural expectations that his son will experience.  This makes men have an easier time understanding boys and a more difficult time understanding girls ***IN GENERAL***. Nothing controversial here.\n\nHe's not saying that the female child is an alien. Not what he said at all, but you have one ot those hair trigger offense guns that just blasts first and asks questions later.", "score": 2, "polarity": 0.11, "word_count": 137}, {"author": "peraspera441", "body": "Avenatti is an adrenaline junkie addicted to competition and winning rather than being an attention whore. While some adrenaline junkies can be good leaders they often have difficulty shifting out of competitive mode when working through differences with friends and allies. This can hamper large scale organizational efforts.\n\nWe already know that Avenatti is great at trolling Trump and controlling the media narrative. However, Avenatti's Texas appearance will give us the first insight into how effective his organizational skills are in building support for Beto.", "score": 11, "polarity": 0.38, "word_count": 86}, {"author": "clkou", "body": "People claim that Bush won in 2004 because of the war that he started, which I am pretty skeptical about anyway. So, then people make these claims that Donald will start a war as a way to get elected.\n\nThe problem with making that leap, even if we assume there is some truth to the war helping Bush in 2004, is that the Democrats helped start the war. Had Bush then or Donald in the future just go off and try to start his own war without help from both sides of Congress, it would backfire spectacularly IMO.", "score": 1, "polarity": 0.19, "word_count": 98}], "1": [{"author": "frumpyballerina", "body": "Ummm...Ron? Is that you?", "score": 24, "polarity": 0.0, "word_count": 5}, {"author": "ConsistentAssignment", "body": "The one that says you can't obstruct justice.", "score": 8, "polarity": 0.0, "word_count": 9}, {"author": "TheDVille", "body": "If those personal reasons include obstructing justice, then that could be considered an unlawful order, no?", "score": 25, "polarity": 0.0, "word_count": 16}, {"author": "BrownSugarBare", "body": "Seriously, what is up with the deep rooted misogyny in the GOP? Do they all have mommy issues?", "score": 350, "polarity": -0.17, "word_count": 18}, {"author": "Celebelly", "body": "Any details on brand or dosage and the type of Tinnitus you have?", "score": 1, "polarity": 0.0, "word_count": 13}, {"author": "cutdownthere", "body": "Haha, right!?", "score": 2, "polarity": 0.28, "word_count": 2}, {"author": "Banned4Sarcasm", "body": "\"And the Lord said, bring unto men your daughters, so that they may lay hands upon them and cover their mouths if they try to scream for this pleases the Lord.\" \n\n- Kavvy 3:16", "score": 28, "polarity": 0.0, "word_count": 34}, {"author": "NiceDecnalsBubs", "body": "Godly how? Because he goes to church?", "score": 1, "polarity": 0.0, "word_count": 7}, {"author": "Phocboi", "body": "yikes", "score": 9, "polarity": 0.0, "word_count": 1}, {"author": "Captain_Waffle", "body": "Except for housing cost.", "score": 18, "polarity": 0.0, "word_count": 4}, {"author": "publicTak", "body": "Success at what? What do you think we are talking about here?", "score": -1, "polarity": 0.3, "word_count": 12}, {"author": "not_nibiru", "body": "Which law is it against?", "score": -12, "polarity": 0.0, "word_count": 5}, {"author": "CarmineFields", "body": "My guess is war with Iran \u2014", "score": 446, "polarity": 0.0, "word_count": 6}, {"author": "wil_daven_", "body": "I like it", "score": 6, "polarity": 0.0, "word_count": 3}, {"author": "donsleakguard", "body": "With Tony Podesta", "score": -46, "polarity": 0.0, "word_count": 3}], "2": [{"author": "TonyNis", "body": "Smash and grab,  how does one smash and grab their OWN money?", "score": 0, "polarity": 0.6, "word_count": 12}, {"author": "Mike072292", "body": "Remind me why that doesn't matter. Remind me who acaully won and how you win an election? Remind me why we have have the electoral vote again. Remind me what country we live in with certain laws. Popular votes mean nothing so bringing it up. That doesn't matter one bit", "score": 3, "polarity": 0.29, "word_count": 52}, {"author": "Krisapocus", "body": "That won\u2019t happen it\u2019s cheap and it gets you from A to B.", "score": 1, "polarity": 0.4, "word_count": 15}, {"author": "bigbrycm", "body": "Nice low blow there lumping religion in there", "score": -65, "polarity": 0.3, "word_count": 8}, {"author": "politirob", "body": "How soon after a committee vote would BK be moved into a full Senate vote?", "score": 0, "polarity": 0.35, "word_count": 15}, {"author": "germancentipede", "body": "People need to build up democratic institutions in their own countries. When dissidents are always fleeing into the free world then their countries will never change. The oppressed people of the world need to rise up and fight for justice and their rights like our ancestors did before. Otherwise nothing will ever change.", "score": 11, "polarity": 0.5, "word_count": 53}, {"author": "1NegativeKarma1", "body": "I meant it was funny.", "score": 8, "polarity": 0.25, "word_count": 5}, {"author": "gotacogo", "body": "Well more people die from sugar, fat and smoking and you would be crazy to ban those so everything should be legal!", "score": -2, "polarity": 0.05, "word_count": 22}, {"author": "jjarlok", "body": "So all she says is that he drank beer. Lol. Nice try very fake news but this is another swing and a miss. Your desperation is showing.", "score": -44, "polarity": 0.25, "word_count": 27}, {"author": "bigbrycm", "body": "Nice low blow there lumping religion in there", "score": -65, "polarity": 0.3, "word_count": 8}, {"author": "ConradFreeStuff69", "body": "This ones better, and you get a nice flag at the end\n\nhttps://8values.github.io/instructions.html", "score": 3, "polarity": 0.55, "word_count": 18}, {"author": "spacehogg", "body": "&gt; I see no reason to doubt her on this\n\nWhen one's job is to lie. And one does so consistently, I'd say that's a good reason to doubt her.", "score": 4, "polarity": 0.47, "word_count": 33}, {"author": "peraspera441", "body": "It will be interesting to see if Avenatti will be able to translate his media skills into effective organizing skills.", "score": 209, "polarity": 0.53, "word_count": 20}, {"author": "i_getitin", "body": "No you have a point. Instead of spending money on sending criminals to jail we should just send them to you !! Lmao", "score": 10, "polarity": 0.22, "word_count": 22}, {"author": "JBow87", "body": "Booker/McRaven would be the best possible ticket I could imagine.", "score": 1, "polarity": 0.5, "word_count": 11}], "3": [{"author": "CadetCovfefe", "body": "It was a good read. \n\nhttps://www.goodreads.com/book/show/35343348-the-dangerous-case-of-donald-trump?from_search=true\n\nThe TL/DR is he is a clear and present danger to our safety.", "score": 946, "polarity": 0.27, "word_count": 34}, {"author": "lifehacker421-1", "body": "this is an accusation in which there is no defense.\n\nIt is literally unprovable and also impossible to prove innocence as well.\n\nThat's why its so incredibly dirty.\n\nI know r politics wouldn't care if every single woman Brett ever met said he was a gentlemen. Because this cesspool of a sub believes the ends justify the means.\n\nI truly think this is going to backfire on the dems.", "score": -51, "polarity": -0.45, "word_count": 71}, {"author": "zombie4374", "body": "If the information is correct, it doesn't really matter who funded it. I hate it when a restroom doesn't have paper towels", "score": 64, "polarity": -0.3, "word_count": 24}, {"author": "Erasumasu", "body": "Also known as \"anyone can enter the sprint but you all get different starting lines.\"  But I guess it's an improvement over only some being allowed to run.", "score": 6, "polarity": 0.0, "word_count": 29}, {"author": "--o", "body": "It's what happens when you go to a website that partially exists to tell you that you're libertarian. In reality left libertarians are an academic niche and furthermore for every actual right libertarian you'll probably find about nine toxic non-libertarians who just happen to hang out with them.", "score": 1, "polarity": 0.04, "word_count": 52}, {"author": "Damn_Dog_Inappropes", "body": "&gt;  It should be illegal to pay rent in California to foreign companies.\n\nI live in Seattle. It should be illegal *nationwide* to pay housing rent to foreigners.", "score": 13, "polarity": -0.25, "word_count": 28}, {"author": "EightsOfClubs", "body": "What's the point? Your initial reaction was to belittle rather than to have any sort of meaningful dialogue. I would only be wasting my time.", "score": 0, "polarity": 0.17, "word_count": 26}, {"author": "JohnnyOnslaught", "body": "You are aware that most of the problems in these areas stem from the US meddling in their countries, right? It's very hard for people to \"build up their Democratic institutions\" when the US can mess that up with a fraction of the effort.", "score": 3, "polarity": 0.1, "word_count": 45}, {"author": "TobyDKK", "body": "She asked him if he wanted to insult Conor, his answer was yes\n\nAfterwards he says McGregor is a \u201cgood\u201d fighter,\nBut nothing more than that. Any champion, especially a 2 division champion in UFC is not merely a \u201cgood\u201d fighter.", "score": 17, "polarity": 0.21, "word_count": 41}, {"author": "bigmoist-ChrisHansen", "body": "Nah I could see where you could see I meant that, I wasn't clear haha", "score": 1, "polarity": 0.15, "word_count": 16}, {"author": "enoughhysteria", "body": "Barely fertalized?\n\nYou are pregnant or you are not.\n\nYou learn this like day 1 of electrician school.", "score": -4, "polarity": 0.19, "word_count": 18}, {"author": "oscar_the_couch", "body": "it will be easier to add seats to the Court. 51 Senators, 218 Congressmen, and a President to add seats, vs. 218 Congressmen and 67 Senators to remove a guy who lied to the American public to get confirmed.", "score": 4, "polarity": 0.13, "word_count": 39}, {"author": "captainAwesomePants", "body": "Exactly. The politically neutral way to say it is that a conservative, by definition, thinks we've been moving in the wrong direction over the last few decades. That may or may not be against progress, depending on your feelings regarding how likely women are to be people.", "score": 2, "polarity": -0.07, "word_count": 48}, {"author": "calisto77", "body": "Bullshit. If he didn't he didn't. Kavanaugh is a damn joke of a judge at this level. He has shown already he has bent the knee. Fuck this guy.", "score": 33, "polarity": -0.4, "word_count": 31}, {"author": "SolelyCurious", "body": "White kids call those who get good grades nerds and bully just as much as anyone else. Trying to make things everyone does worse when people of color do it is a large part of the problem. White people own the media. Even when you look at black rappers, the production companies behind them are almost always white. Black folks are the products, not the producers.", "score": -5, "polarity": 0.05, "word_count": 66}]}};
+
+  const STATE_LABELS = ["Deep Dive", "Inquiry", "Friction", "Banter", "Thread Death"];
+  const STATE_COLORS = ["#1b9e77", "#386cb0", "#d95f02", "#7570b3", "#6e7681"];
+
+  function updateMatrices() {
+    const comm = document.getElementById("community-select").value;
+    const P = P_DATA[comm] || P_DATA["overall_corpus"];
+    const N = N_DATA[comm] || N_DATA["overall_corpus"];
+    const Tau = TAU_DATA[comm] || TAU_DATA["overall_corpus"];
+
+    // Render P table
+    let p_html = "<thead><tr><th>From \\ To</th><th>Deep Dive</th><th>Inquiry</th><th>Friction</th><th>Banter</th><th>Death (Exit)</th></tr></thead><tbody>";
+    const states = ["Deep Dive", "Inquiry", "Friction", "Banter", "Thread Death (Absorbing)"];
+    
+    for (let i = 0; i < 5; i++) {
+      const from_name = states[i];
+      p_html += `<tr><td>${STATE_LABELS[i]}</td>`;
+      for (let j = 0; j < 5; j++) {
+        const to_name = states[j];
+        let val = (P[to_name] && P[to_name][from_name] !== undefined) ? (P[to_name][from_name] * 100).toFixed(1) : "0.0";
+        let bg = "";
+        if (parseFloat(val) > 30) bg = "background: rgba(217, 95, 2, 0.25); color: #ffa657;";
+        else if (parseFloat(val) > 20) bg = "background: rgba(88, 166, 255, 0.15); color: #58a6ff;";
+        p_html += `<td><span class="highlight-cell" style="${bg}">${val}%</span></td>`;
+      }
+      p_html += "</tr>";
+    }
+    p_html += "</tbody>";
+    document.getElementById("p-matrix-table").innerHTML = p_html;
+
+    // Render N table
+    let n_html = "<thead><tr><th>Starting State</th><th>E(Deep Dive)</th><th>E(Inquiry)</th><th>E(Friction)</th><th>E(Banter)</th><th>Expected Life (τ)</th></tr></thead><tbody>";
+    const trans_states = ["Deep Dive", "Inquiry", "Friction", "Banter"];
+    for (let i = 0; i < 4; i++) {
+      const from_name = trans_states[i];
+      n_html += `<tr><td>${STATE_LABELS[i]}</td>`;
+      for (let j = 0; j < 4; j++) {
+        const to_name = trans_states[j];
+        let val = (N[to_name] && N[to_name][from_name] !== undefined) ? parseFloat(N[to_name][from_name]).toFixed(2) : "0.00";
+        n_html += `<td>${val}</td>`;
+      }
+      const tau_val = Tau[from_name] !== undefined ? parseFloat(Tau[from_name]).toFixed(2) : "--";
+      n_html += `<td style="color: #3fb950; font-weight: 700;">${tau_val}</td></tr>`;
+    }
+    n_html += "</tbody>";
+    document.getElementById("n-matrix-table").innerHTML = n_html;
+  }
+
+  function runSimulation() {
+    const comm = document.getElementById("sim-comm").value;
+    let currState = parseInt(document.getElementById("sim-state").value);
+    const P = P_DATA[comm] || P_DATA["overall_corpus"];
+    const states = ["Deep Dive", "Inquiry", "Friction", "Banter", "Thread Death (Absorbing)"];
+
+    const timeline = document.getElementById("sim-timeline");
+    timeline.innerHTML = "";
+
+    let step = 0;
+    const maxSteps = 12;
+
+    addTimelineNode(step, currState, comm, false);
+
+    while (currState !== 4 && step < maxSteps) {
+      step++;
+      const from_name = states[currState];
+      const probs = [];
+      let cum = 0;
+      for (let j = 0; j < 5; j++) {
+        const to_name = states[j];
+        const p = (P[to_name] && P[to_name][from_name] !== undefined) ? P[to_name][from_name] : 0;
+        cum += p;
+        probs.push(cum);
+      }
+
+      const rand = Math.random() * cum;
+      let nextState = 4;
+      for (let j = 0; j < 5; j++) {
+        if (rand <= probs[j]) {
+          nextState = j;
+          break;
+        }
+      }
+
+      if (nextState === 4) {
+        addTimelineNode(step, 4, comm, true);
+        break;
+      } else {
+        addTimelineNode(step, nextState, comm, false);
+        currState = nextState;
+      }
+    }
+  }
+
+  function addTimelineNode(step, stateId, comm, isDead) {
+    const timeline = document.getElementById("sim-timeline");
+    const node = document.createElement("div");
+    node.className = "timeline-node";
+    node.style.borderColor = STATE_COLORS[stateId];
+
+    if (isDead) {
+      node.innerHTML = `
+        <div class="step-badge" style="background: ${STATE_COLORS[stateId]}">STEP ${step}</div>
+        <div class="comment-content">
+          <div style="font-weight: 700; color: #f85149;">⚠️ THREAD DEATH: Leaf node reached / Zero further replies.</div>
+          <div class="comment-stats" style="margin-top: 4px;">Conversation terminated. Absorbing State reached.</div>
+        </div>
+      `;
+    } else {
+      const samples = SAMPLES[comm][stateId] || SAMPLES["overall_corpus"][stateId];
+      const comment = samples[Math.floor(Math.random() * samples.length)];
+      node.innerHTML = `
+        <div class="step-badge" style="background: ${STATE_COLORS[stateId]}">STEP ${step} • ${STATE_LABELS[stateId].toUpperCase()}</div>
+        <div class="comment-content">
+          <div class="comment-author">u/${comment.author} <span style="color: var(--text-secondary); font-weight: normal;">in r/${comm}</span></div>
+          <div class="comment-body">"${comment.body}"</div>
+          <div class="comment-stats">Score: ${comment.score} | Words: ${comment.word_count} | Polarity: ${comment.polarity}</div>
+        </div>
+      `;
+    }
+    timeline.appendChild(node);
+  }
+
+  function openModal(src, title) {
+    document.getElementById("modal-img").src = src;
+    document.getElementById("modal-caption").innerText = title;
+    document.getElementById("img-modal").classList.add("active");
+  }
+  function closeModal() {
+    document.getElementById("img-modal").classList.remove("active");
+  }
+
+  // Initial load
+  updateMatrices();
+  runSimulation();
+</script>
+</body>
+</html>

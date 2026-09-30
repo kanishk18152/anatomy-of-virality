@@ -1,0 +1,4 @@
+comparison,frobenius_distance_obs,p_value,is_significant_05,is_significant_01,threads_a,threads_b
+r/science vs r/politics,0.1801,0.122,False,False,35,59
+r/science vs r/cringe,0.2767,0.004,True,True,35,28
+r/politics vs r/cringe,0.2522,0.016,True,False,59,28

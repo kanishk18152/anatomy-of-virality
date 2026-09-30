@@ -1,0 +1,23 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environment & Local Cache
+.venv/
+.cache/
+env/
+venv/
+
+# macOS system files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+
+# Large raw corpus archives (>100MB GitHub limit)
+# Note: data/raw/reddit_comments.csv (1.1MB) is preserved so the pipeline runs out-of-the-box
+data/raw/reddit-corpus-small/
+data/raw/reddit-corpus-small*/
+data/raw/reddit-corpus-small.zip
